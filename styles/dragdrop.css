@@ -1,0 +1,28 @@
+/* Visual feedback for native card drag-and-drop. */
+
+.card[draggable='true'] {
+  cursor: grab;
+}
+
+.card.dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+  box-shadow: var(--shadow-lg);
+  transform: rotate(1.5deg);
+}
+
+.column--drag-over {
+  outline: 2px dashed var(--color-primary);
+  outline-offset: -2px;
+  background: rgba(37, 99, 235, 0.06);
+}
+
+.column--drag-over .column__cards {
+  min-height: 48px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card.dragging {
+    transform: none;
+  }
+}

@@ -1,1 +1,0 @@
-<div class="dashboard-sidebar">Sidebar</div>

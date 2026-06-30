@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/schemas/board-state.json",
+  "title": "BoardState",
+  "type": "object",
+  "required": ["board", "columns", "cards"],
+  "properties": {
+    "board": { "$ref": "#/definitions/Board" },
+    "columns": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/Column" }
+    },
+    "cards": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/Card" }
+    },
+    "users": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/User" }
+    }
+  },
+  "definitions": {
+    "Board": {
+      "type": "object",
+      "required": ["id", "title", "createdAt", "updatedAt"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "title": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "ownerId": { "type": "string", "format": "uuid" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Column": {
+      "type": "object",
+      "required": ["id", "boardId", "title", "position"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "boardId": { "type": "string", "format": "uuid" },
+        "title": { "type": "string", "minLength": 1 },
+        "position": { "type": "integer", "minimum": 0 },
+        "wipLimit": { "type": ["integer", "null"], "minimum": 0 }
+      }
+    },
+    "Card": {
+      "type": "object",
+      "required": ["id", "columnId", "title", "position", "createdAt", "updatedAt"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "columnId": { "type": "string", "format": "uuid" },
+        "title": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "position": { "type": "integer", "minimum": 0 },
+        "assigneeIds": {
+          "type": "array",
+          "items": { "type": "string", "format": "uuid" }
+        },
+        "labels": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "dueDate": { "type": ["string", "null"], "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "User": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "name": { "type": "string", "minLength": 1 },
+        "email": { "type": "string", "format": "email" },
+        "avatarUrl": { "type": "string", "format": "uri" }
+      }
+    }
+  }
+}
