@@ -1,0 +1,14 @@
+// styles/dashboard.css
+.crypto-asset-card {
+  border: 1px solid #ddd;
+  padding: 20px;
+  margin-bottom: 10px;
+}
+
+.crypto-asset-card h3 {
+  font-size: 1.5em;
+}
+
+.crypto-asset-card p {
+  margin: 5px 0;
+}
