@@ -1,39 +1,67 @@
-require('dotenv').config();
+(function () {
+  'use strict';
 
-function required(name, fallback) {
-  const value = process.env[name];
-  if (value === undefined || value === '') {
-    if (fallback !== undefined) {
-      return fallback;
-    }
-    throw new Error(`Missing required environment variable: ${name}`);
+  if (typeof document === 'undefined') {
+    return;
   }
-  return value;
-}
 
-function optional(name, fallback) {
-  const value = process.env[name];
-  return value === undefined || value === '' ? fallback : value;
-}
+  function init() {
+    var billInput = document.getElementById('bill');
+    var tipInput = document.getElementById('tip');
+    var splitInput = document.getElementById('split');
 
-const env = optional('NODE_ENV', 'development');
-const isTest = env === 'test';
+    var tipAmountEl = document.getElementById('tip-amount');
+    var totalAmountEl = document.getElementById('total-amount');
+    var perPersonEl = document.getElementById('per-person');
 
-const config = {
-  env,
-  port: parseInt(optional('PORT', '3000'), 10),
-  appName: optional('APP_NAME', 'my-app'),
-  appUrl: optional('APP_URL', 'http://localhost:3000'),
-  supabase: {
-    url: required('SUPABASE_URL', isTest ? 'http://localhost:54321' : undefined),
-    anonKey: required('SUPABASE_ANON_KEY', isTest ? 'test-anon-key' : undefined),
-    serviceRoleKey: optional('SUPABASE_SERVICE_ROLE_KEY', ''),
-  },
-  databaseUrl: optional('DATABASE_URL', ''),
-  jwtSecret: required('JWT_SECRET', isTest ? 'test-jwt-secret' : undefined),
-  sessionSecret: optional('SESSION_SECRET', ''),
-  logLevel: optional('LOG_LEVEL', 'info'),
-  isProduction: env === 'production',
-};
+    var currencyFormatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    });
 
-module.exports = config;
+    function parseNonNegative(value) {
+      var n = parseFloat(value);
+      if (isNaN(n) || n < 0) {
+        return 0;
+      }
+      return n;
+    }
+
+    function parseSplit(value) {
+      var n = parseInt(value, 10);
+      if (isNaN(n) || n < 1) {
+        return 1;
+      }
+      return n;
+    }
+
+    function calculate() {
+      var bill = parseNonNegative(billInput.value);
+      var tipPercent = parseNonNegative(tipInput.value);
+      var split = parseSplit(splitInput.value);
+
+      var tipAmount = bill * (tipPercent / 100);
+      var total = bill + tipAmount;
+      var perPerson = total / split;
+
+      tipAmountEl.textContent = currencyFormatter.format(tipAmount);
+      totalAmountEl.textContent = currencyFormatter.format(total);
+      perPersonEl.textContent = currencyFormatter.format(perPerson);
+    }
+
+    [billInput, tipInput, splitInput].forEach(function (el) {
+      if (el) {
+        el.addEventListener('input', calculate);
+      }
+    });
+
+    // Initial render
+    calculate();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
