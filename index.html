@@ -1,31 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kanban Board</title>
-  <link rel="stylesheet" href="styles/base.css" />
-  <link rel="stylesheet" href="styles/theme.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Application root page">
+  <title>App</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/kanban.css">
+  <link rel="stylesheet" href="styles/polish.css">
 </head>
 <body>
-  <div id="app">
-    <header class="app-header">
-      <div class="app-header__brand">
-        <h1 class="app-header__title" id="board-title">Kanban Board</h1>
-      </div>
-      <div class="app-header__actions">
-        <button type="button" class="btn btn--ghost" id="reset-board-btn">Reset</button>
-        <button type="button" class="btn btn--primary" id="add-column-btn">+ Add Column</button>
-      </div>
-    </header>
-
-    <main class="board-wrapper">
-      <div class="board" id="board" role="list" aria-label="Board columns">
-        <!-- Columns are rendered here by the app -->
-      </div>
-    </main>
-  </div>
-
-  <script type="module" src="src/main.ts"></script>
+  <header id="app-header"></header>
+  <main id="app" role="main"></main>
+  <footer id="app-footer"></footer>
+  <script src="src/store.js" defer></script>
+  <script src="src/render.js" defer></script>
+  <script src="src/interactions.js" defer></script>
+  <script src="src/dnd.js" defer></script>
+  <script src="src/app.js" defer></script>
 </body>
 </html>
