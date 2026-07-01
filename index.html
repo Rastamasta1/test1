@@ -3,39 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Message Board</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Guestbook</title>
+  <link rel="stylesheet" href="styles/main.css" />
 </head>
 <body>
-  <main class="container">
-    <header class="header">
-      <h1>Message Board</h1>
-      <p class="subtitle">Leave a message for everyone to see.</p>
-    </header>
+  <h1>Guestbook</h1>
 
-    <form id="message-form" class="message-form" autocomplete="off">
-      <div class="field">
-        <label for="author-input">Name</label>
-        <input id="author-input" name="author" type="text" placeholder="anonymous" maxlength="60" />
-      </div>
-      <div class="field">
-        <label for="content-input">Message</label>
-        <textarea id="content-input" name="content" rows="3" placeholder="Write something..." required></textarea>
-      </div>
-      <div class="form-actions">
-        <button type="submit" id="submit-btn" class="btn">Post Message</button>
-        <span id="form-status" class="form-status" role="status" aria-live="polite"></span>
-      </div>
-    </form>
+  <form id="message-form">
+    <input type="text" id="name-input" name="name" placeholder="Your name" required />
+    <textarea id="message-input" name="message" placeholder="Your message" required></textarea>
+    <button type="submit" id="submit-btn">Post Message</button>
+    <div id="form-status" role="status" aria-live="polite"></div>
+  </form>
 
-    <section class="messages-section">
-      <h2 class="messages-title">Messages</h2>
-      <ul id="messages-list" class="messages-list">
-        <li class="empty-state" id="empty-state">No messages yet. Be the first!</li>
-      </ul>
-    </section>
-  </main>
+  <ul id="messages"></ul>
 
-  <script type="module" src="app.js"></script>
+  <script type="module" src="src/app.js"></script>
 </body>
 </html>
