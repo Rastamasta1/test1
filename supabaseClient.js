@@ -1,3 +1,6 @@
+// Single Supabase client instance shared across the app.
+// Import { supabase } from './supabaseClient.js' in other files.
+// Never call createClient or re-import from the CDN elsewhere.
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 const SUPABASE_URL = 'https://crwnrevifhskgqgtwvuu.supabase.co';
