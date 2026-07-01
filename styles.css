@@ -1,0 +1,139 @@
+:root {
+  --bg: #f4f5f7;
+  --card: #ffffff;
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --error: #dc2626;
+  --success: #16a34a;
+  --radius: 10px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+}
+
+.header { text-align: center; margin-bottom: 2rem; }
+.header h1 { margin: 0 0 .25rem; font-size: 1.9rem; }
+.subtitle { margin: 0; color: var(--muted); }
+
+.message-form {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,.05);
+}
+
+.field { margin-bottom: 1rem; }
+.field label {
+  display: block;
+  font-size: .85rem;
+  font-weight: 600;
+  margin-bottom: .35rem;
+  color: var(--text);
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: .6rem .75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font: inherit;
+  color: var(--text);
+  background: #fff;
+  resize: vertical;
+}
+
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79,70,229,.15);
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: .6rem 1.2rem;
+  border-radius: 8px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+.btn:hover { background: var(--primary-hover); }
+.btn:disabled { opacity: .6; cursor: not-allowed; }
+
+.form-status { font-size: .85rem; }
+.form-status.error { color: var(--error); }
+.form-status.success { color: var(--success); }
+
+.messages-section { margin-top: 1rem; }
+.messages-title { font-size: 1.2rem; margin: 0 0 1rem; }
+
+.messages-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+
+.message-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: .9rem 1rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04);
+}
+
+.message-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: .35rem;
+  gap: .5rem;
+}
+
+.message-author { font-weight: 600; color: var(--text); }
+.message-time { font-size: .75rem; color: var(--muted); white-space: nowrap; }
+.message-content { margin: 0; white-space: pre-wrap; word-break: break-word; }
+
+.empty-state {
+  text-align: center;
+  color: var(--muted);
+  padding: 1.5rem;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+}
+
+@media (max-width: 480px) {
+  .container { padding: 1.5rem .75rem 3rem; }
+  .form-actions { flex-direction: column; align-items: stretch; }
+  .btn { width: 100%; }
+}

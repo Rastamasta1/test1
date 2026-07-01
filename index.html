@@ -1,23 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Application root page">
-  <title>App</title>
-  <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="styles/main.css">
-  <link rel="stylesheet" href="styles/kanban.css">
-  <link rel="stylesheet" href="styles/polish.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Message Board</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header id="app-header"></header>
-  <main id="app" role="main"></main>
-  <footer id="app-footer"></footer>
-  <script src="src/store.js" defer></script>
-  <script src="src/render.js" defer></script>
-  <script src="src/interactions.js" defer></script>
-  <script src="src/dnd.js" defer></script>
-  <script src="src/app.js" defer></script>
+  <main class="container">
+    <header class="header">
+      <h1>Message Board</h1>
+      <p class="subtitle">Leave a message for everyone to see.</p>
+    </header>
+
+    <form id="message-form" class="message-form" autocomplete="off">
+      <div class="field">
+        <label for="author-input">Name</label>
+        <input id="author-input" name="author" type="text" placeholder="anonymous" maxlength="60" />
+      </div>
+      <div class="field">
+        <label for="content-input">Message</label>
+        <textarea id="content-input" name="content" rows="3" placeholder="Write something..." required></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="submit" id="submit-btn" class="btn">Post Message</button>
+        <span id="form-status" class="form-status" role="status" aria-live="polite"></span>
+      </div>
+    </form>
+
+    <section class="messages-section">
+      <h2 class="messages-title">Messages</h2>
+      <ul id="messages-list" class="messages-list">
+        <li class="empty-state" id="empty-state">No messages yet. Be the first!</li>
+      </ul>
+    </section>
+  </main>
+
+  <script type="module" src="app.js"></script>
 </body>
 </html>
