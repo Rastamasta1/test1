@@ -3,21 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Guestbook</title>
+  <title>Message Board</title>
   <link rel="stylesheet" href="styles/main.css" />
 </head>
 <body>
-  <h1>Guestbook</h1>
+  <main class="container">
+    <h1>Message Board</h1>
 
-  <form id="message-form">
-    <input type="text" id="name-input" name="name" placeholder="Your name" required />
-    <textarea id="message-input" name="message" placeholder="Your message" required></textarea>
-    <button type="submit" id="submit-btn">Post Message</button>
-    <div id="form-status" role="status" aria-live="polite"></div>
-  </form>
+    <form id="message-form" class="message-form">
+      <div class="field">
+        <label for="name-input">Name</label>
+        <input type="text" id="name-input" name="name" placeholder="Your name" required />
+      </div>
+      <div class="field">
+        <label for="message-input">Message</label>
+        <textarea id="message-input" name="message" placeholder="Write a message..." required></textarea>
+      </div>
+      <button type="submit">Post Message</button>
+      <p id="form-error" class="form-error" role="alert"></p>
+    </form>
 
-  <ul id="messages"></ul>
+    <section class="messages">
+      <h2>Messages</h2>
+      <div id="message-list" class="message-list"></div>
+    </section>
+  </main>
 
-  <script type="module" src="src/app.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
