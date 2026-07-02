@@ -3,34 +3,103 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tasks · Personal Task Manager</title>
+  <title>Finance Tracker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="app-container">
+  <div class="app">
     <header class="app-header">
-      <div>
-        <h1>My Tasks</h1>
-        <p class="subtitle">Stay on top of what matters.</p>
+      <div class="brand">
+        <span class="brand-icon">💸</span>
+        <h1>Finance Tracker</h1>
+      </div>
+      <div class="month-nav">
+        <button id="prev-month" class="icon-btn" aria-label="Previous month">&#8249;</button>
+        <select id="month-select" class="month-select" aria-label="Select month"></select>
+        <button id="next-month" class="icon-btn" aria-label="Next month">&#8250;</button>
       </div>
     </header>
 
-    <div id="form-mount"></div>
-
-    <section class="card mt-4">
-      <div class="toolbar">
-        <div class="tabs" id="tabs">
-          <button type="button" class="tab active" data-view="active">Active</button>
-          <button type="button" class="tab" data-view="completed">Completed</button>
+    <main class="app-main">
+      <section class="dashboard" aria-label="Monthly summary">
+        <div class="card card-balance">
+          <span class="card-label">Balance</span>
+          <span id="balance-value" class="card-value">$0.00</span>
         </div>
-        <div id="filter-mount"></div>
+        <div class="card card-income">
+          <span class="card-label">Income</span>
+          <span id="income-value" class="card-value">$0.00</span>
+        </div>
+        <div class="card card-expense">
+          <span class="card-label">Expenses</span>
+          <span id="expense-value" class="card-value">$0.00</span>
+        </div>
+      </section>
+
+      <div class="layout">
+        <aside class="sidebar">
+          <section class="panel form-panel">
+            <h2 class="panel-title">Add Transaction</h2>
+            <form id="transaction-form" class="transaction-form" autocomplete="off">
+              <input type="hidden" id="tx-id" value="" />
+
+              <div class="type-toggle" role="radiogroup" aria-label="Transaction type">
+                <label class="type-option">
+                  <input type="radio" name="type" value="expense" checked />
+                  <span>Expense</span>
+                </label>
+                <label class="type-option">
+                  <input type="radio" name="type" value="income" />
+                  <span>Income</span>
+                </label>
+              </div>
+
+              <div class="field">
+                <label for="tx-amount">Amount</label>
+                <input type="number" id="tx-amount" step="0.01" min="0" placeholder="0.00" required />
+              </div>
+
+              <div class="field">
+                <label for="tx-category">Category</label>
+                <select id="tx-category" required></select>
+              </div>
+
+              <div class="field">
+                <label for="tx-date">Date</label>
+                <input type="date" id="tx-date" required />
+              </div>
+
+              <div class="field">
+                <label for="tx-note">Note</label>
+                <input type="text" id="tx-note" placeholder="Optional note" maxlength="200" />
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" id="submit-btn" class="btn btn-primary">Add</button>
+                <button type="button" id="cancel-edit" class="btn btn-ghost" hidden>Cancel</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="panel chart-panel">
+            <h2 class="panel-title">Spending by Category</h2>
+            <div id="category-bars" class="category-bars"></div>
+          </section>
+        </aside>
+
+        <section class="panel list-panel">
+          <div class="list-header">
+            <h2 class="panel-title">Transactions</h2>
+            <select id="category-filter" class="category-filter" aria-label="Filter by category">
+              <option value="">All categories</option>
+            </select>
+          </div>
+          <div id="transactions-list" class="transactions-list"></div>
+          <p id="empty-state" class="empty-state" hidden>No transactions for this month.</p>
+        </section>
       </div>
-      <div id="active-list"></div>
-      <div id="completed-list" class="hidden"></div>
-    </section>
+    </main>
   </div>
 
   <script type="module" src="app.js"></script>

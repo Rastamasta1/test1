@@ -1,6 +1,7 @@
+// Single shared Supabase client for the whole app.
+// All other modules (e.g. app.js) MUST import { supabase } from './supabaseClient.js'.
+// Never call createClient again anywhere else.
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-const SUPABASE_URL = 'https://crwnrevifhskgqgtwvuu.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyd25yZXZpZmhza2dxZ3R3dnV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4NzM3MjUsImV4cCI6MjA5ODQ0OTcyNX0.nMbzRqFmpIG5CuDKUZmXbpQgczxQlzNw91tKjxYv0Xs';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
