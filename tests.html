@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Integration Tests \u00b7 Task Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/main.css" />
+  <style>
+    .test-row{font-family:var(--font);font-size:.9rem;padding:8px 12px;border-radius:var(--radius-sm);margin-top:6px;border:1px solid var(--border);}
+    .test-row.pass{background:var(--success-soft);color:var(--success);}
+    .test-row.fail{background:var(--danger-soft);color:var(--danger);}
+    .summary{font-weight:700;margin-top:var(--sp-4);font-size:1.05rem;}
+    .summary.ok{color:var(--success);}
+    .summary.bad{color:var(--danger);}
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div>
+        <h1>Integration Tests</h1>
+        <p class="subtitle">Runs against the live Supabase table; created rows are cleaned up.</p>
+      </div>
+    </header>
+    <section class="card">
+      <div id="summary" class="summary">Running\u2026</div>
+      <div id="results" class="mt-4"></div>
+    </section>
+  </div>
+  <script type="module" src="integration-tests.js"></script>
+</body>
+</html>

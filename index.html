@@ -3,40 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Guestbook</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Tasks · Personal Task Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/main.css" />
 </head>
 <body>
-  <main class="container">
-    <header class="header">
-      <h1>Guestbook</h1>
-      <p class="subtitle">Leave a message for everyone to see.</p>
+  <div class="app-container">
+    <header class="app-header">
+      <div>
+        <h1>My Tasks</h1>
+        <p class="subtitle">Stay on top of what matters.</p>
+      </div>
     </header>
 
-    <section class="card">
-      <form id="guestbook-form" class="form" autocomplete="off">
-        <div class="field">
-          <label for="name-input">Name</label>
-          <input id="name-input" name="name" type="text" placeholder="Your name" maxlength="80" required />
-        </div>
-        <div class="field">
-          <label for="message-input">Message</label>
-          <textarea id="message-input" name="message" rows="3" placeholder="Write something nice..." maxlength="500" required></textarea>
-        </div>
-        <div class="form-footer">
-          <p id="form-status" class="status" role="status" aria-live="polite"></p>
-          <button id="submit-btn" type="submit" class="btn">Sign guestbook</button>
-        </div>
-      </form>
-    </section>
+    <div id="form-mount"></div>
 
-    <section class="messages-section">
-      <h2 class="messages-title">Messages</h2>
-      <ul id="messages-list" class="messages-list" aria-live="polite">
-        <li class="empty" id="messages-empty">Loading messages...</li>
-      </ul>
+    <section class="card mt-4">
+      <div class="toolbar">
+        <div class="tabs" id="tabs">
+          <button type="button" class="tab active" data-view="active">Active</button>
+          <button type="button" class="tab" data-view="completed">Completed</button>
+        </div>
+        <div id="filter-mount"></div>
+      </div>
+      <div id="active-list"></div>
+      <div id="completed-list" class="hidden"></div>
     </section>
-  </main>
+  </div>
 
   <script type="module" src="app.js"></script>
 </body>
