@@ -1,28 +1,31 @@
--- Personal Finance Tracker schema
-
-create table if not exists transactions (
+-- Recipes table for the recipe collection app
+create table if not exists recipes (
   id uuid primary key default gen_random_uuid(),
-  type text not null check (type in ('income','expense')),
-  amount numeric(12,2) not null check (amount >= 0),
-  category text not null check (category in ('salary','food','rent','transport','entertainment','other')),
-  date date not null default current_date,
-  note text default '',
-  created_at timestamptz not null default now()
+  title text not null,
+  category text not null check (category in ('breakfast','lunch','dinner','dessert','snack')),
+  cook_time integer not null default 0,
+  servings integer not null default 1,
+  image_url text,
+  ingredients jsonb not null default '[]'::jsonb,
+  steps jsonb not null default '[]'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
 );
 
-create index if not exists transactions_date_idx on transactions(date desc);
-create index if not exists transactions_category_idx on transactions(category);
+create index if not exists recipes_category_idx on recipes (category);
+create index if not exists recipes_created_at_idx on recipes (created_at desc);
 
-alter table transactions enable row level security;
+-- Enable Row Level Security with open policies for this demo app
+alter table recipes enable row level security;
 
-drop policy if exists "public read" on transactions;
-create policy "public read" on transactions for select using (true);
+drop policy if exists "Public read recipes" on recipes;
+create policy "Public read recipes" on recipes for select using (true);
 
-drop policy if exists "public insert" on transactions;
-create policy "public insert" on transactions for insert with check (true);
+drop policy if exists "Public insert recipes" on recipes;
+create policy "Public insert recipes" on recipes for insert with check (true);
 
-drop policy if exists "public update" on transactions;
-create policy "public update" on transactions for update using (true) with check (true);
+drop policy if exists "Public update recipes" on recipes;
+create policy "Public update recipes" on recipes for update using (true) with check (true);
 
-drop policy if exists "public delete" on transactions;
-create policy "public delete" on transactions for delete using (true);
+drop policy if exists "Public delete recipes" on recipes;
+create policy "Public delete recipes" on recipes for delete using (true);

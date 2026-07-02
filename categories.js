@@ -1,40 +1,33 @@
-// Predefined transaction categories with color coding.
-// Column value used in schema.sql `category` check: salary, food, rent, transport, entertainment, other.
-// All other modules should import from here to keep labels/colors consistent.
+// Shared category definitions for the recipe collection app.
+// The `value` fields MUST match the check constraint in schema.sql:
+//   category in ('breakfast','lunch','dinner','dessert','snack')
 
 export const CATEGORIES = [
-  { key: 'salary',        label: 'Salary',        type: 'income',  color: '#22c55e', icon: '\uD83D\uDCB0' },
-  { key: 'food',          label: 'Food',          type: 'expense', color: '#f97316', icon: '\uD83C\uDF7D\uFE0F' },
-  { key: 'rent',          label: 'Rent',          type: 'expense', color: '#6366f1', icon: '\uD83C\uDFE0' },
-  { key: 'transport',     label: 'Transport',     type: 'expense', color: '#0ea5e9', icon: '\uD83D\uDE97' },
-  { key: 'entertainment', label: 'Entertainment', type: 'expense', color: '#ec4899', icon: '\uD83C\uDFAC' },
-  { key: 'other',         label: 'Other',         type: 'expense', color: '#94a3b8', icon: '\uD83D\uDCE6' }
+  { value: 'breakfast', label: 'Breakfast', emoji: '\uD83C\uDF73' },
+  { value: 'lunch',     label: 'Lunch',     emoji: '\uD83E\uDD57' },
+  { value: 'dinner',    label: 'Dinner',    emoji: '\uD83C\uDF7D\uFE0F' },
+  { value: 'dessert',   label: 'Dessert',   emoji: '\uD83C\uDF70' },
+  { value: 'snack',     label: 'Snack',     emoji: '\uD83C\uDF7F' }
 ];
 
-// Fast lookup by key.
-export const CATEGORY_MAP = CATEGORIES.reduce((map, cat) => {
-  map[cat.key] = cat;
-  return map;
+// Quick lookup map keyed by category value.
+export const CATEGORY_MAP = CATEGORIES.reduce((acc, c) => {
+  acc[c.value] = c;
+  return acc;
 }, {});
 
-// Convenience groupings.
-export const INCOME_CATEGORIES = CATEGORIES.filter(c => c.type === 'income');
-export const EXPENSE_CATEGORIES = CATEGORIES.filter(c => c.type === 'expense');
-
-// Safe getter — returns the 'other' category as a fallback for unknown keys.
-export function getCategory(key) {
-  return CATEGORY_MAP[key] || CATEGORY_MAP['other'];
+// Return the full category object for a given value, or null if unknown.
+export function getCategory(value) {
+  return CATEGORY_MAP[value] || null;
 }
 
-// Helpers used by UI rendering.
-export function getCategoryColor(key) {
-  return getCategory(key).color;
+// Human-friendly label for a category value (falls back to the raw value).
+export function categoryLabel(value) {
+  const c = CATEGORY_MAP[value];
+  return c ? c.label : (value || '');
 }
 
-export function getCategoryLabel(key) {
-  return getCategory(key).label;
-}
-
-export function getCategoryIcon(key) {
-  return getCategory(key).icon;
+// True if the given value is one of the allowed categories.
+export function isValidCategory(value) {
+  return Object.prototype.hasOwnProperty.call(CATEGORY_MAP, value);
 }

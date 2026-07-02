@@ -1,6 +1,6 @@
-// Single shared Supabase client for the whole app.
-// All other modules (e.g. app.js) MUST import { supabase } from './supabaseClient.js'.
-// Never call createClient again anywhere else.
+// Single Supabase client for the recipe collection app.
+// All other modules must import { supabase } from './supabaseClient.js'
+// and must NEVER call createClient again.
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
 
