@@ -1,15 +1,15 @@
-import { addMessage, getMessages } from './messageService.js';
+import { fetchMessages, insertMessage } from './dataService.js';
 
 const form = document.getElementById('guestbook-form');
-const nameInput = document.getElementById('name');
-const messageInput = document.getElementById('message');
-const status = document.getElementById('form-status');
-const list = document.getElementById('messages-list');
-const submitBtn = form.querySelector('button[type="submit"]');
+const nameInput = document.getElementById('name-input');
+const messageInput = document.getElementById('message-input');
+const submitBtn = document.getElementById('submit-btn');
+const statusEl = document.getElementById('form-status');
+const listEl = document.getElementById('messages-list');
 
 function setStatus(text, type) {
-  status.textContent = text || '';
-  status.className = 'status' + (type ? ' ' + type : '');
+  statusEl.textContent = text || '';
+  statusEl.className = 'status' + (type ? ' ' + type : '');
 }
 
 function escapeHtml(str) {
@@ -22,73 +22,75 @@ function escapeHtml(str) {
 }
 
 function formatTime(iso) {
-  const d = new Date(iso);
-  if (isNaN(d.getTime())) return '';
   try {
+    const d = new Date(iso);
     return d.toLocaleString(undefined, {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit'
+      year: 'numeric', month: 'short', day: 'numeric',
+      hour: '2-digit', minute: '2-digit'
     });
   } catch (e) {
-    return d.toLocaleString();
+    return '';
   }
 }
 
 function renderMessages(messages) {
+  listEl.innerHTML = '';
+
   if (!messages || messages.length === 0) {
-    list.innerHTML = '<li class="empty">No messages yet. Be the first to sign!</li>';
+    const li = document.createElement('li');
+    li.className = 'empty';
+    li.textContent = 'No messages yet. Be the first to sign the guestbook!';
+    listEl.appendChild(li);
     return;
   }
-  list.innerHTML = messages
-    .map(function (m) {
-      return (
-        '<li class="message-card">' +
-        '<div class="meta">' +
-        '<span class="name">' + escapeHtml(m.name) + '</span>' +
-        '<span class="time">' + escapeHtml(formatTime(m.created_at)) + '</span>' +
-        '</div>' +
-        '<p class="text">' + escapeHtml(m.message) + '</p>' +
-        '</li>'
-      );
-    })
-    .join('');
+
+  for (const msg of messages) {
+    const li = document.createElement('li');
+    li.className = 'message';
+    li.innerHTML =
+      '<div class="message-head">' +
+        '<span class="message-name">' + escapeHtml(msg.name) + '</span>' +
+        '<span class="message-time">' + escapeHtml(formatTime(msg.created_at)) + '</span>' +
+      '</div>' +
+      '<p class="message-body">' + escapeHtml(msg.message) + '</p>';
+    listEl.appendChild(li);
+  }
 }
 
 async function loadMessages() {
   try {
-    const messages = await getMessages();
+    const messages = await fetchMessages();
     renderMessages(messages);
   } catch (err) {
-    list.innerHTML = '<li class="empty">Could not load messages.</li>';
-    console.error(err);
+    listEl.innerHTML = '';
+    const li = document.createElement('li');
+    li.className = 'empty';
+    li.textContent = 'Could not load messages. Please try again later.';
+    listEl.appendChild(li);
   }
 }
 
-form.addEventListener('submit', async function (e) {
+form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const name = nameInput.value.trim();
   const message = messageInput.value.trim();
 
   if (!name || !message) {
-    setStatus('Please fill in both your name and a message.', 'error');
+    setStatus('Please enter both your name and a message.', 'error');
     return;
   }
 
   submitBtn.disabled = true;
-  setStatus('Signing...', '');
+  setStatus('Posting your message...', '');
 
   try {
-    await addMessage(name, message);
+    await insertMessage(name, message);
+    messageInput.value = '';
     setStatus('Thanks for signing the guestbook!', 'success');
-    form.reset();
     await loadMessages();
   } catch (err) {
     setStatus('Something went wrong. Please try again.', 'error');
-    console.error(err);
   } finally {
     submitBtn.disabled = false;
   }
