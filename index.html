@@ -1,21 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Color Palette Generator</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feedback Wall</title>
+  <meta name="description" content="Leave feedback and see what others think — rate, comment, and browse the wall." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/base.css" />
+  <link rel="stylesheet" href="styles/layout.css" />
+  <link rel="stylesheet" href="styles/states.css" />
+  <link rel="stylesheet" href="styles/toast.css" />
+  <link rel="stylesheet" href="styles/responsive.css" />
 </head>
 <body>
-  <header>
-    <h1>Color Palette Generator</h1>
-    <p>Click generate to create 5 random colors. Click a swatch (or press Enter/Space) to copy its hex code.</p>
-  </header>
-  <main>
-    <button id="generate-btn">Generate Palette</button>
-    <div id="palette" role="list" aria-label="Generated color swatches"></div>
-    <div id="toast" class="toast" role="status" aria-live="polite" hidden>Copied!</div>
+  <main class="app">
+    <header class="app-header">
+      <h1>Feedback Wall</h1>
+      <p>Share your thoughts and see what everyone else is saying.</p>
+      <div id="summary-mount"></div>
+    </header>
+
+    <section class="section" aria-labelledby="form-heading">
+      <h2 class="section-title" id="form-heading">Leave feedback</h2>
+      <div id="form-mount"></div>
+    </section>
+
+    <section class="section" aria-labelledby="list-heading">
+      <h2 class="section-title" id="list-heading">Recent feedback</h2>
+      <div id="list-mount"></div>
+    </section>
   </main>
-  <script src="app.js"></script>
+
+  <script type="module" src="app.js"></script>
 </body>
 </html>
