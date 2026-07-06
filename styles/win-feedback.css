@@ -1,0 +1,197 @@
+/* win-feedback.css — Casino-quality win/lose feedback visuals. */
+/* Rendered by win-feedback.js. Complements payline-highlight.css/panels.css. */
+
+/* ---- Burst overlay (coins + sparks arcing over the reels) ---- */
+
+.win-feedback__overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 5;
+}
+
+/* Reels container must anchor the absolute overlay. */
+.reels {
+  position: relative;
+}
+
+.win-feedback__coin {
+  position: absolute;
+  left: var(--start-x, 50%);
+  bottom: 8%;
+  font-size: clamp(1.1rem, 4vw, 1.8rem);
+  line-height: 1;
+  filter: drop-shadow(0 0 6px var(--gold-glow));
+  will-change: transform, opacity;
+  opacity: 0;
+  animation: coin-fly var(--dur, 1100ms) cubic-bezier(0.22, 0.7, 0.3, 1)
+    var(--delay, 0ms) forwards;
+}
+
+@keyframes coin-fly {
+  0% {
+    transform: translate(0, 0) scale(0.6) rotate(0deg);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+    transform: translate(calc(var(--drift-x) * 0.2), -8%) scale(1.05)
+      rotate(calc(var(--rot) * 0.15));
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--drift-x), calc(-1 * var(--rise)))
+      scale(0.9) rotate(var(--rot));
+    opacity: 0;
+  }
+}
+
+/* ---- Celebratory banner ---- */
+
+.win-feedback__banner {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.7);
+  z-index: 6;
+  pointer-events: none;
+  padding: 0.5rem 1.5rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--gold-500);
+  text-shadow:
+    0 2px 0 var(--gold-700),
+    0 0 22px var(--gold-glow),
+    0 4px 14px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
+  font-size: clamp(1.6rem, 7vw, 3rem);
+  white-space: nowrap;
+}
+
+.win-feedback__banner.is-shown {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.win-feedback__banner--big {
+  color: var(--gold-400);
+}
+
+.win-feedback__banner--mega {
+  color: var(--gold-400);
+  animation: banner-throb 0.7s ease-in-out infinite;
+}
+
+.win-feedback__banner--jackpot {
+  font-size: clamp(1.9rem, 9vw, 3.6rem);
+  background: linear-gradient(
+    90deg,
+    var(--gold-600),
+    var(--gold-400) 40%,
+    #fff 50%,
+    var(--gold-400) 60%,
+    var(--gold-600)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 220% 100%;
+  animation: jackpot-shimmer 1.6s linear infinite, banner-throb 0.6s ease-in-out infinite;
+  text-shadow: 0 0 30px var(--gold-glow);
+}
+
+@keyframes banner-throb {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50%      { transform: translate(-50%, -50%) scale(1.08); }
+}
+
+@keyframes jackpot-shimmer {
+  0%   { background-position: 220% 0; }
+  100% { background-position: -20% 0; }
+}
+
+/* ---- Machine win flash (gold glow pulse on the shell) ---- */
+
+.machine.is-win-flash {
+  animation: machine-win-flash 0.9s ease-out;
+}
+
+.machine.is-win-flash.win-tier--mega,
+.machine.is-win-flash.win-tier--jackpot {
+  animation: machine-win-flash-strong 1.4s ease-out;
+}
+
+@keyframes machine-win-flash {
+  0% {
+    box-shadow:
+      var(--shadow-deep),
+      inset 0 0 0 1px rgba(255, 213, 74, 0.15),
+      0 0 40px rgba(0, 0, 0, 0.5);
+  }
+  35% {
+    box-shadow:
+      var(--shadow-deep),
+      inset 0 0 0 2px rgba(255, 213, 74, 0.6),
+      0 0 60px var(--gold-glow);
+  }
+  100% {
+    box-shadow:
+      var(--shadow-deep),
+      inset 0 0 0 1px rgba(255, 213, 74, 0.15),
+      0 0 40px rgba(0, 0, 0, 0.5);
+  }
+}
+
+@keyframes machine-win-flash-strong {
+  0%, 100% {
+    box-shadow:
+      var(--shadow-deep),
+      inset 0 0 0 1px rgba(255, 213, 74, 0.15),
+      0 0 40px rgba(0, 0, 0, 0.5);
+  }
+  25% {
+    box-shadow:
+      var(--shadow-deep),
+      inset 0 0 0 3px rgba(255, 224, 138, 0.85),
+      0 0 90px var(--gold-glow);
+  }
+  60% {
+    box-shadow:
+      var(--shadow-deep),
+      inset 0 0 0 2px rgba(255, 213, 74, 0.5),
+      0 0 60px var(--gold-glow);
+  }
+}
+
+/* ---- Subtle lose feedback: brief dim on the reels ---- */
+
+.reels.is-lose-dim {
+  animation: reels-lose-dim 0.5s ease-out;
+}
+
+@keyframes reels-lose-dim {
+  0%   { filter: brightness(1); }
+  40%  { filter: brightness(0.82) saturate(0.85); }
+  100% { filter: brightness(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .win-feedback__coin,
+  .win-feedback__banner,
+  .win-feedback__banner--mega,
+  .win-feedback__banner--jackpot,
+  .machine.is-win-flash,
+  .reels.is-lose-dim {
+    animation: none !important;
+  }
+  .win-feedback__banner {
+    transition: none !important;
+  }
+}

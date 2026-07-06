@@ -1,0 +1,106 @@
+/* spin-animation.css — Staggered left-to-right reel spin/stop animations for Lucky Reels */
+/* Depends on CSS custom properties from base.css. Complements reels.css. */
+/*
+ * DRIVEN BY JS (ui.js):
+ *   1. On SPIN: add .is-spinning to every .reel simultaneously.
+ *   2. Stop staggered left->right (~2s total). Suggested timeline:
+ *        reel 0 stop ~1.0s, reel 1 ~1.4s, reel 2 ~1.8s.
+ *      For each reel: remove .is-spinning, add .is-stopping then .is-settled.
+ *   3. After settle, remove .is-stopping/.is-settled.
+ * The per-reel [data-reel] delays below add polish without JS timing changes.
+ */
+
+/* ---- Continuous spin: fast vertical scroll blur while active ---- */
+
+@keyframes reel-scroll {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-33.333%); }
+}
+
+@keyframes reel-motion-blur {
+  0%, 100% { filter: blur(2px) brightness(1.08); }
+  50%      { filter: blur(5px) brightness(1.18); }
+}
+
+.reel.is-spinning .cell {
+  animation: reel-scroll 0.11s linear infinite;
+  will-change: transform;
+}
+
+.reel.is-spinning .cell__symbol {
+  animation: reel-motion-blur 0.22s ease-in-out infinite;
+  will-change: filter;
+}
+
+/* Slight per-reel speed variation so reels don't look mechanically identical. */
+.reel.is-spinning[data-reel="1"] .cell { animation-duration: 0.10s; }
+.reel.is-spinning[data-reel="2"] .cell { animation-duration: 0.12s; }
+
+/* ---- Stopping: freeze scroll, snap glyphs to rest ---- */
+
+.reel.is-stopping .cell {
+  animation: none;
+  transform: translateY(0);
+}
+
+.reel.is-stopping .cell__symbol {
+  animation: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+}
+
+/* ---- Settle: overshoot + spring bounce on landing ---- */
+
+@keyframes reel-settle-bounce {
+  0%   { transform: translateY(-14%); }
+  45%  { transform: translateY(5%); }
+  70%  { transform: translateY(-2%); }
+  100% { transform: translateY(0); }
+}
+
+.reel.is-settled .cell {
+  animation: reel-settle-bounce 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Reinforce the left-to-right cascade: later reels land a touch slower/deeper. */
+.reel.is-settled[data-reel="0"] .cell { animation-duration: 0.30s; }
+.reel.is-settled[data-reel="1"] .cell { animation-duration: 0.34s; animation-delay: 0.02s; }
+.reel.is-settled[data-reel="2"] .cell { animation-duration: 0.38s; animation-delay: 0.04s; }
+
+/* ---- Anticipation flash: subtle brighten as a reel is about to stop ---- */
+
+@keyframes reel-anticipation {
+  0%   { box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.55); }
+  50%  { box-shadow: inset 0 0 14px rgba(255, 213, 74, 0.22); }
+  100% { box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.55); }
+}
+
+.reel.is-anticipating .cell {
+  animation: reel-anticipation 0.4s ease-in-out;
+}
+
+/* ---- Whole-machine spin cue (optional): faint shimmer while any reel spins ---- */
+
+@keyframes machine-spin-glow {
+  0%, 100% { box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.7); }
+  50%      { box-shadow: inset 0 0 30px rgba(255, 213, 74, 0.10); }
+}
+
+.reels.is-spinning {
+  animation: machine-spin-glow 0.6s ease-in-out infinite;
+}
+
+/* ---- Reduced motion: no scrolling/bouncing, keep a gentle static blur ---- */
+
+@media (prefers-reduced-motion: reduce) {
+  .reel.is-spinning .cell,
+  .reel.is-spinning .cell__symbol,
+  .reel.is-settled .cell,
+  .reel.is-anticipating .cell,
+  .reels.is-spinning {
+    animation: none !important;
+    transform: none !important;
+  }
+  .reel.is-spinning .cell__symbol {
+    filter: blur(1.5px) brightness(1.05);
+  }
+}
