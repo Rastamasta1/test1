@@ -1,260 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="A simple, clean countdown timer web app. Set minutes, then start, pause, or reset." />
-  <meta name="theme-color" content="#0f172a" />
-  <title>Countdown Timer</title>
-  <style>
-    :root {
-      --bg: #0f172a;
-      --panel: #1e293b;
-      --accent: #38bdf8;
-      --text: #f1f5f9;
-      --muted: #94a3b8;
-      --border: #334155;
-      --font: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      --mono: "SF Mono", ui-monospace, Menlo, Consolas, "Roboto Mono", monospace;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; }
-    body {
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 1rem;
-    }
-    main {
-      background: var(--panel);
-      padding: 2.5rem 2rem;
-      border-radius: 1.25rem;
-      box-shadow: 0 20px 45px rgba(0,0,0,0.4);
-      width: 100%;
-      max-width: 420px;
-      text-align: center;
-    }
-    h1 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
-      letter-spacing: 0.02em;
-    }
-    .display {
-      font-family: var(--mono);
-      font-size: clamp(3.5rem, 18vw, 6rem);
-      font-weight: 700;
-      font-variant-numeric: tabular-nums;
-      line-height: 1;
-      letter-spacing: 0.08em;
-      color: var(--accent);
-      background: linear-gradient(180deg, rgba(15,23,42,0.85), rgba(15,23,42,0.55));
-      border: 1px solid var(--border);
-      border-radius: 1rem;
-      padding: 1.25rem 1rem;
-      margin: 0.5rem 0 1.75rem;
-      text-shadow:
-        0 0 8px rgba(56,189,248,0.55),
-        0 0 22px rgba(56,189,248,0.30);
-      box-shadow:
-        inset 0 2px 10px rgba(0,0,0,0.55),
-        inset 0 0 30px rgba(56,189,248,0.06);
-      user-select: none;
-    }
-    .display.finished {
-      color: #f87171;
-      text-shadow:
-        0 0 8px rgba(248,113,113,0.55),
-        0 0 22px rgba(248,113,113,0.30);
-      animation: blink 1s steps(2, start) infinite;
-    }
-    @keyframes blink {
-      50% { opacity: 0.35; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .display.finished { animation: none; }
-    }
-    .status {
-      min-height: 1.4rem;
-      margin: -1rem 0 1.25rem;
-      font-size: 1rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      color: var(--muted);
-      transition: color 0.2s ease;
-    }
-    .status.finished {
-      color: #f87171;
-      text-shadow: 0 0 12px rgba(248,113,113,0.35);
-    }
-    .set-time {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.6rem;
-      margin-bottom: 1.75rem;
-    }
-    .set-time label {
-      color: var(--muted);
-      font-size: 0.95rem;
-      font-weight: 500;
-      letter-spacing: 0.02em;
-    }
-    .set-time input {
-      width: 5.5rem;
-      padding: 0.6rem 0.75rem;
-      font-size: 1.1rem;
-      font-weight: 600;
-      font-variant-numeric: tabular-nums;
-      text-align: center;
-      color: var(--text);
-      background: #0f172a;
-      border: 1px solid var(--border);
-      border-radius: 0.6rem;
-      box-shadow: inset 0 1px 4px rgba(0,0,0,0.45);
-      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-      -moz-appearance: textfield;
-    }
-    .set-time input::-webkit-outer-spin-button,
-    .set-time input::-webkit-inner-spin-button {
-      -webkit-appearance: inner-spin-button;
-      opacity: 0.6;
-      height: 1.6rem;
-      cursor: pointer;
-    }
-    .set-time input:hover {
-      border-color: #475569;
-      background: #131f38;
-    }
-    .set-time input:focus {
-      outline: none;
-      border-color: var(--accent);
-      background: #0d1b33;
-      box-shadow:
-        inset 0 1px 4px rgba(0,0,0,0.45),
-        0 0 0 3px rgba(56,189,248,0.25);
-    }
-    .set-time input::placeholder {
-      color: var(--muted);
-    }
-    .controls {
-      display: flex;
-      gap: 0.75rem;
-      justify-content: center;
-    }
-    button {
-      flex: 1;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4rem;
-      padding: 0.75rem 0.5rem;
-      font-size: 0.95rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      border: none;
-      border-radius: 0.7rem;
-      cursor: pointer;
-      color: #0f172a;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.25);
-      transition: transform 0.08s ease, box-shadow 0.15s ease, filter 0.15s ease, opacity 0.15s ease;
-    }
-    button:hover { filter: brightness(1.08); }
-    button:active {
-      transform: translateY(2px);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.15);
-    }
-    button:focus-visible {
-      outline: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.35), 0 0 0 3px rgba(56,189,248,0.4);
-    }
-    button:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-      filter: none;
-      transform: none;
-      box-shadow: none;
-    }
-    #startBtn { background: linear-gradient(180deg, #4dd0f9, #22b8ec); }
-    #pauseBtn { background: linear-gradient(180deg, #fcd34d, #fbbf24); }
-    #resetBtn {
-      background: linear-gradient(180deg, #74839b, #64748b);
-      color: var(--text);
-    }
-
-    @media (max-width: 480px) {
-      body { padding: 0.75rem; }
-      main {
-        padding: 1.75rem 1.25rem;
-        border-radius: 1rem;
-      }
-      h1 {
-        font-size: 1.3rem;
-        margin-bottom: 1.25rem;
-      }
-      .display {
-        padding: 1rem 0.75rem;
-        margin: 0.5rem 0 1.5rem;
-        letter-spacing: 0.05em;
-      }
-      .status { margin: -0.75rem 0 1rem; }
-      .set-time {
-        margin-bottom: 1.5rem;
-      }
-      .controls {
-        gap: 0.5rem;
-      }
-      button {
-        padding: 0.7rem 0.35rem;
-        font-size: 0.85rem;
-        letter-spacing: 0.02em;
-      }
-    }
-
-    @media (max-width: 360px) {
-      main { padding: 1.5rem 1rem; }
-      h1 { font-size: 1.15rem; }
-      .set-time {
-        flex-direction: column;
-        gap: 0.4rem;
-      }
-      .set-time input {
-        width: 100%;
-      }
-      .controls {
-        flex-wrap: wrap;
-      }
-      button {
-        flex: 1 1 100%;
-      }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Conductor — Governance for Autonomous AI Development</title>
+<link rel="stylesheet" href="styles/base.css" />
+<link rel="stylesheet" href="hero.css" />
+<link rel="stylesheet" href="values.css" />
+<link rel="stylesheet" href="how.css" />
+<link rel="stylesheet" href="features.css" />
+<link rel="stylesheet" href="faq.css" />
+<link rel="stylesheet" href="cta.css" />
+<link rel="stylesheet" href="footer.css" />
+<link rel="stylesheet" href="styles/responsive.css" />
+<style>
+.container{max-width:1100px;margin:0 auto;padding:0 24px}
+header{position:sticky;top:0;backdrop-filter:blur(10px);background:rgba(10,11,15,.7);border-bottom:1px solid var(--border);z-index:10}
+.nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-weight:700;font-size:1.2rem;letter-spacing:-.02em}
+.logo span{color:var(--accent)}
+.nav a{color:var(--muted);text-decoration:none;margin-left:24px;font-size:.95rem}
+.nav a:hover{color:var(--text)}
+section{padding:80px 0;border-top:1px solid var(--border)}
+.section-title{text-align:center;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;letter-spacing:-.02em;margin-bottom:12px}
+.section-sub{text-align:center;color:var(--muted);margin-bottom:56px}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:28px}
+.card .icon{color:var(--accent);margin-bottom:14px}
+.card h3{font-size:1.2rem;margin-bottom:8px}
+.card p{color:var(--muted);font-size:.98rem}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;counter-reset:step}
+.step{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:26px;position:relative}
+.step .num{width:34px;height:34px;border-radius:50%;background:linear-gradient(90deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:700;margin-bottom:14px}
+.step h3{font-size:1.05rem;margin-bottom:6px}
+.step p{color:var(--muted);font-size:.92rem}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.feature{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:22px}
+.feature h4{font-size:1.05rem;margin-bottom:6px}
+.feature p{color:var(--muted);font-size:.9rem}
+.cta-section{text-align:center}
+.cta-section form{max-width:440px;margin:32px auto 0;display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.cta-section input{flex:1;min-width:220px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text);font-size:1rem}
+.cta-section input[aria-invalid="true"]{border-color:#ff6c8c;box-shadow:0 0 0 3px rgba(255,108,140,.25)}
+.cta-section button{padding:14px 26px;border:none;border-radius:10px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;font-weight:600;cursor:pointer;font-size:1rem;box-shadow:0 8px 30px rgba(108,140,255,.3);transition:transform .2s ease,box-shadow .2s ease}
+.cta-section button:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(108,140,255,.5)}
+#thanks{margin-top:20px;color:var(--accent);font-weight:600;display:none}
+</style>
 </head>
 <body>
-  <main>
-    <h1>Countdown Timer</h1>
+<header>
+  <div class="container nav">
+    <div class="logo">Con<span>ductor</span></div>
+    <nav>
+      <a href="#values">Governance</a>
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#faq">FAQ</a>
+      <a href="#signup">Get access</a>
+    </nav>
+  </div>
+</header>
 
-    <div id="display" class="display">00:00</div>
-
-    <div id="status" class="status" role="status" aria-live="polite"></div>
-
-    <div class="set-time">
-      <label for="minutesInput">Minutes</label>
-      <input id="minutesInput" type="number" min="0" max="999" value="5" />
+<main>
+  <section class="hero" style="border-top:none">
+    <div class="container">
+      <h1>Stop babysitting your AI</h1>
+      <p>Conductor lets AI agents build software under your control: every change audited, every risk human-approved, every dollar capped.</p>
+      <a class="cta" href="#signup">Request early access</a>
     </div>
+  </section>
 
-    <div class="controls">
-      <button id="startBtn" type="button">Start</button>
-      <button id="pauseBtn" type="button">Pause</button>
-      <button id="resetBtn" type="button">Reset</button>
+  <section id="values">
+    <div class="container">
+      <h2 class="section-title">Control, without the babysitting</h2>
+      <p class="section-sub">Three guarantees that keep autonomous agents accountable.</p>
+      <div class="grid-3">
+        <article class="card">
+          <div class="icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <h3>Governed</h3>
+          <p>Approval gates on money, database, and deploy actions. Nothing risky happens without a human decision.</p>
+        </article>
+        <article class="card">
+          <div class="icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h8M8 9h2"/></svg></div>
+          <h3>Audited</h3>
+          <p>A complete trail of who approved what and when — exportable, immutable, and ready for review.</p>
+        </article>
+        <article class="card">
+          <div class="icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5a2.5 2 0 0 1 5 0c0 1.5-2.5 1.5-2.5 2.5s2.5 1 2.5 2.5a2.5 2 0 0 1-5 0"/></svg></div>
+          <h3>Capped</h3>
+          <p>Mathematically enforced spend limits. Set a budget and the system cannot exceed it.</p>
+        </article>
+      </div>
     </div>
-  </main>
+  </section>
 
-  <script type="module" src="app.js"></script>
+  <section id="how">
+    <div class="container">
+      <h2 class="section-title">How it works</h2>
+      <p class="section-sub">From idea to deployed software in four governed steps.</p>
+      <div class="steps">
+        <div class="step"><div class="num">1</div><h3>Describe your idea</h3><p>Tell Conductor what you want built in plain language.</p></div>
+        <div class="step"><div class="num">2</div><h3>Review the plan and cost</h3><p>See the proposed work and an upfront cost estimate.</p></div>
+        <div class="step"><div class="num">3</div><h3>Approve sprint by sprint</h3><p>Green-light work incrementally, keeping full control.</p></div>
+        <div class="step"><div class="num">4</div><h3>Get tested, deployed software</h3><p>Receive browser-tested, deployed output you can trust.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="container">
+      <h2 class="section-title">Everything ships with guardrails</h2>
+      <p class="section-sub">A production-grade autonomous pipeline.</p>
+      <div class="features">
+        <div class="feature"><h4>Sprint reviews</h4><p>Approve or reject work at every sprint boundary.</p></div>
+        <div class="feature"><h4>Browser-tested output</h4><p>Deliverables are verified in a real browser before delivery.</p></div>
+        <div class="feature"><h4>Self-repair</h4><p>Agents detect and fix their own failures automatically.</p></div>
+        <div class="feature"><h4>Real database migrations</h4><p>Schema changes run through governed, approvable migrations.</p></div>
+        <div class="feature"><h4>Governed deploys</h4><p>Deployments require explicit human sign-off.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="container">
+      <h2 class="section-title">Frequently asked questions</h2>
+      <p class="section-sub">Everything regulated teams ask before adopting Conductor.</p>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>How does Conductor keep spend under control?</summary>
+          <p>You set a hard budget cap. Conductor enforces it mathematically — agents cannot initiate an action that would exceed the limit, and every dollar is attributed to an approved sprint.</p>
+        </details>
+        <details class="faq-item">
+          <summary>What exactly requires human approval?</summary>
+          <p>Any risky action — spending money, running database migrations, and deploying — passes through an approval gate. You green-light work sprint by sprint before anything ships.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Is the audit trail exportable?</summary>
+          <p>Yes. Conductor records who approved what and when in an immutable, exportable log — built for compliance review and regulated environments.</p>
+        </details>
+        <details class="faq-item">
+          <summary>How is generated software verified?</summary>
+          <p>Deliverables are tested in a real browser before delivery, and agents self-repair failures automatically. You only review output that already passes checks.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Do I need to change my existing stack?</summary>
+          <p>No. Conductor layers governance on top of autonomous agents — you keep your tools and get approval gates, caps, and audit trails around them.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section id="signup" class="cta-section">
+    <div class="container">
+      <h2 class="section-title">Built for regulated teams</h2>
+      <p class="section-sub">Get early access to autonomous development you can actually govern.</p>
+      <form id="signup-form" novalidate>
+        <input type="email" id="email" name="email" placeholder="you@company.com" required aria-label="Email address" />
+        <button type="submit">Request access</button>
+      </form>
+      <p class="cta-note">No spam. Full audit trail on every action. Cancel anytime.</p>
+      <p id="thanks">Thanks — you’re on the list. We’ll be in touch.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo">Con<span>ductor</span></div>
+        <p>Governance for autonomous AI software development. Every change audited, every risk human-approved, every dollar capped.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Product</h5>
+        <ul>
+          <li><a href="#values">Governance</a></li>
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#signup">Get access</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Resources</h5>
+        <ul>
+          <li><a href="#">Documentation</a></li>
+          <li><a href="#">Audit exports</a></li>
+          <li><a href="#">Changelog</a></li>
+          <li><a href="#">Status</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Security</a></li>
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="copy">&copy; 2025 Conductor. All rights reserved.</span>
+      <div class="footer-social">
+        <a href="#" aria-label="GitHub"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05a9.4 9.4 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.6.69.49A10.02 10.02 0 0 0 22 12.25C22 6.58 17.52 2 12 2z"/></svg></a>
+        <a href="#" aria-label="X"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.24 2.25h3.31l-7.23 8.26 8.51 11.24h-6.66l-5.22-6.82-5.97 6.82H1.66l7.73-8.83L1.23 2.25H8.06l4.71 6.23 5.47-6.23zm-1.16 17.52h1.83L7.01 4.13H5.05l12.03 15.64z"/></svg></a>
+        <a href="#" aria-label="LinkedIn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.64h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.4c0-1.29-.02-2.95-1.8-2.95-1.8 0-2.08 1.4-2.08 2.85V21H9z"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="reveal.js"></script>
+<script src="form.js"></script>
 </body>
 </html>

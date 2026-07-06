@@ -1,0 +1,23 @@
+/* Site footer — multi-column layout, dark premium theme */
+footer{border-top:1px solid var(--border);padding:56px 0 32px;color:var(--muted);font-size:.9rem;background:linear-gradient(180deg,transparent,rgba(108,140,255,.03))}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:32px;align-items:start;text-align:left}
+.footer-brand .logo{font-weight:700;font-size:1.2rem;letter-spacing:-.02em;color:var(--text);margin-bottom:12px}
+.footer-brand .logo span{color:var(--accent)}
+.footer-brand p{max-width:280px;font-size:.9rem;color:var(--muted);line-height:1.6}
+.footer-col h5{color:var(--text);font-size:.85rem;font-weight:600;letter-spacing:.02em;text-transform:uppercase;margin-bottom:14px}
+.footer-col ul{display:flex;flex-direction:column;gap:10px}
+.footer-col a{color:var(--muted);text-decoration:none;font-size:.92rem;transition:color .2s ease}
+.footer-col a:hover{color:var(--accent)}
+.footer-bottom{margin-top:44px;padding-top:24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.footer-bottom .copy{color:var(--muted);font-size:.85rem}
+.footer-bottom .footer-social{display:flex;gap:18px}
+.footer-bottom .footer-social a{color:var(--muted);transition:color .2s ease,transform .2s ease}
+.footer-bottom .footer-social a:hover{color:var(--accent);transform:translateY(-2px)}
+@media (max-width:680px){
+  .footer-grid{grid-template-columns:1fr 1fr;gap:28px}
+  .footer-brand{grid-column:1 / -1}
+  .footer-bottom{justify-content:center;text-align:center}
+}
+@media (max-width:480px){
+  .footer-grid{grid-template-columns:1fr}
+}

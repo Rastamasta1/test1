@@ -1,0 +1,112 @@
+/* Conductor — base reset, dark theme variables, typography system */
+
+/* Theme tokens */
+:root{
+  --bg:#0a0b0f;
+  --panel:#12141c;
+  --border:#22252f;
+  --text:#e8eaf0;
+  --muted:#9aa0b0;
+  --accent:#6c8cff;
+  --accent2:#8a6cff;
+
+  /* Typography scale */
+  --font-sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --fs-base:1rem;
+  --lh-base:1.6;
+  --lh-tight:1.05;
+  --ls-tight:-.03em;
+  --ls-snug:-.02em;
+  --fw-normal:400;
+  --fw-medium:600;
+  --fw-bold:700;
+  --fw-black:800;
+
+  /* Layout tokens */
+  --container-max:1100px;
+  --container-pad:24px;
+  --grid-gap:24px;
+}
+
+/* Reset */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+
+/* Base typography */
+body{
+  font-family:var(--font-sans);
+  font-size:var(--fs-base);
+  line-height:var(--lh-base);
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+h1,h2,h3,h4,h5,h6{
+  font-weight:var(--fw-bold);
+  letter-spacing:var(--ls-snug);
+  line-height:1.2;
+}
+h1{font-weight:var(--fw-black);letter-spacing:var(--ls-tight);line-height:var(--lh-tight)}
+
+p{color:var(--text)}
+
+a{color:inherit;text-decoration:none}
+
+img,svg{display:block;max-width:100%}
+
+button,input,textarea,select{font:inherit;color:inherit}
+
+ul,ol{list-style:none}
+
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------------------------------------------------------------
+   Responsive container + grid utilities
+   --------------------------------------------------------------- */
+
+/* Container: centered, max-width, consistent gutters */
+.container{
+  width:100%;
+  max-width:var(--container-max);
+  margin-inline:auto;
+  padding-inline:var(--container-pad);
+}
+
+/* Generic responsive grid utilities (auto-fit, min-width controlled) */
+.grid{display:grid;gap:var(--grid-gap)}
+.grid-3{display:grid;gap:var(--grid-gap);grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.grid-4{display:grid;gap:var(--grid-gap);grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+
+/* Tablet and below */
+@media (max-width:900px){
+  :root{--container-pad:20px}
+  section{padding:64px 0}
+  .hero{padding:96px 0 72px}
+}
+
+/* Small tablet / large phone */
+@media (max-width:680px){
+  :root{--container-pad:18px;--grid-gap:18px}
+  section{padding:52px 0}
+  .hero{padding:72px 0 56px}
+  .section-sub{margin-bottom:40px}
+  /* Collapse multi-column layouts to single column */
+  .grid-3,
+  .grid-4,
+  .steps,
+  .features{grid-template-columns:1fr}
+}
+
+/* Phone */
+@media (max-width:480px){
+  :root{--container-pad:16px}
+  .hero{padding:56px 0 44px}
+  .nav a{margin-left:16px;font-size:.9rem}
+  .card,.step,.feature{padding:22px}
+  /* Stack the signup form vertically */
+  .cta-section form{flex-direction:column;align-items:stretch}
+  .cta-section input,
+  .cta-section button{width:100%;min-width:0}
+}
