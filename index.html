@@ -1,75 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lucky Reels</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Split the Bill</title>
+<style>
+  :root {
+    --accent: #2f7d5a;
+    --bg: #f7f7f8;
+    --card-bg: #ffffff;
+    --text: #222;
+    --muted: #666;
+    --error: #c0392b;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    min-height: 100vh;
+  }
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    padding: 24px;
+    width: 100%;
+    max-width: 420px;
+  }
+  h1 {
+    font-size: 1.4rem;
+    margin: 0 0 20px;
+    text-align: center;
+  }
+  label {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-bottom: 6px;
+    margin-top: 16px;
+  }
+  input[type="number"], input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    min-height: 44px;
+  }
+  input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(47, 125, 90, 0.15);
+  }
+  .tip-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .tip-btn {
+    flex: 1 1 30%;
+    min-width: 70px;
+    min-height: 44px;
+    padding: 10px 0;
+    border: 1px solid var(--accent);
+    background: transparent;
+    color: var(--accent);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .tip-btn:hover {
+    background: rgba(47, 125, 90, 0.08);
+  }
+  .tip-btn.active {
+    background: var(--accent);
+    color: #fff;
+  }
+  .error {
+    color: var(--error);
+    font-size: 0.85rem;
+    margin-top: 6px;
+    min-height: 1.1em;
+    line-height: 1.3;
+  }
+  .results {
+    margin-top: 24px;
+    border-top: 1px solid #eee;
+    padding-top: 16px;
+  }
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 1rem;
+    gap: 8px;
+  }
+  .result-row.total {
+    font-weight: 600;
+  }
+  .result-row.per-person {
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 1.15rem;
+  }
+  .actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+  }
+  #reset-btn {
+    background: #eee;
+    border: none;
+    padding: 10px 20px;
+    min-height: 44px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--text);
+    width: 100%;
+    max-width: 200px;
+  }
+  #reset-btn:hover {
+    background: #e0e0e0;
+  }
+
+  /* Mobile-friendly refinements for small screens */
+  @media (max-width: 480px) {
+    body {
+      padding: 12px;
+    }
+    .card {
+      padding: 18px;
+      border-radius: 8px;
+    }
+    h1 {
+      font-size: 1.25rem;
+      margin-bottom: 14px;
+    }
+    label {
+      margin-top: 12px;
+      font-size: 0.85rem;
+    }
+    .tip-buttons {
+      gap: 6px;
+    }
+    .tip-btn {
+      font-size: 0.95rem;
+      flex: 1 1 28%;
+    }
+    .result-row.per-person {
+      font-size: 1.05rem;
+    }
+    #reset-btn {
+      max-width: 100%;
+    }
+  }
+</style>
 </head>
 <body>
-  <main class="machine" id="machine">
-    <header class="machine__header">
-      <h1 class="machine__title">Lucky Reels</h1>
-      <div class="stats">
-        <div class="stat stat--credits">
-          <span class="stat__label">Credits</span>
-          <span class="stat__value" id="credits">1000</span>
+  <div class="card">
+    <h1>Split the Bill</h1>
+    <form id="bill-form" novalidate>
+      <label for="total">Total bill amount</label>
+      <input type="text" id="total" inputmode="decimal" placeholder="e.g. 45.50" autocomplete="off">
+      <div class="error" id="total-error"></div>
+
+      <label>Tip percentage</label>
+      <div class="tip-buttons">
+        <button type="button" class="tip-btn" data-tip="10">10%</button>
+        <button type="button" class="tip-btn" data-tip="15">15%</button>
+        <button type="button" class="tip-btn" data-tip="20">20%</button>
+      </div>
+      <input type="text" id="custom-tip" inputmode="decimal" placeholder="Custom tip % (optional)" autocomplete="off" style="margin-top:10px;">
+      <div class="error" id="tip-error"></div>
+
+      <label for="people">Number of people</label>
+      <input type="text" id="people" inputmode="numeric" placeholder="e.g. 4" autocomplete="off">
+      <div class="error" id="people-error"></div>
+
+      <div class="results">
+        <div class="result-row">
+          <span>Tip amount</span>
+          <span id="tip-amount">$0.00</span>
         </div>
-        <div class="stat stat--bet">
-          <span class="stat__label">Bet</span>
-          <span class="stat__value" id="bet">10</span>
+        <div class="result-row total">
+          <span>Total with tip</span>
+          <span id="total-with-tip">$0.00</span>
         </div>
-        <div class="stat stat--win">
-          <span class="stat__label">Win</span>
-          <span class="stat__value" id="win">0</span>
+        <div class="result-row per-person">
+          <span>Per person</span>
+          <span id="per-person">$0.00</span>
         </div>
       </div>
-    </header>
 
-    <section class="reels" id="reels" aria-label="Reels">
-      <div class="reel" data-reel="0">
-        <div class="cell" data-reel="0" data-row="0"></div>
-        <div class="cell" data-reel="0" data-row="1"></div>
-        <div class="cell" data-reel="0" data-row="2"></div>
+      <div class="actions">
+        <button type="button" id="reset-btn">Reset</button>
       </div>
-      <div class="reel" data-reel="1">
-        <div class="cell" data-reel="1" data-row="0"></div>
-        <div class="cell" data-reel="1" data-row="1"></div>
-        <div class="cell" data-reel="1" data-row="2"></div>
-      </div>
-      <div class="reel" data-reel="2">
-        <div class="cell" data-reel="2" data-row="0"></div>
-        <div class="cell" data-reel="2" data-row="1"></div>
-        <div class="cell" data-reel="2" data-row="2"></div>
-      </div>
-      <svg class="paylines-overlay" id="paylines-overlay" aria-hidden="true"></svg>
-    </section>
+    </form>
+  </div>
 
-    <p class="message" id="message" role="status" aria-live="polite"></p>
-
-    <section class="controls" id="controls">
-      <div class="bet-controls" role="group" aria-label="Bet amount">
-        <button type="button" class="bet-btn is-active" data-bet="10">10</button>
-        <button type="button" class="bet-btn" data-bet="25">25</button>
-        <button type="button" class="bet-btn" data-bet="50">50</button>
-        <button type="button" class="bet-btn" data-bet="100">100</button>
-      </div>
-      <button type="button" class="spin-btn" id="spin">SPIN</button>
-      <button type="button" class="paytable-toggle" id="paytable-toggle" aria-expanded="false" aria-controls="paytable">Paytable</button>
-    </section>
-
-    <div class="out-of-credits" id="out-of-credits" hidden>
-      <p>Out of credits!</p>
-      <button type="button" class="reset-btn" id="reset">Reset Credits</button>
-    </div>
-
-    <aside class="paytable" id="paytable" hidden>
-      <h2 class="paytable__title">Paytable</h2>
-      <ul class="paytable__list" id="paytable-list"></ul>
-      <p class="paytable__rtp">Declared RTP: <span id="rtp"></span></p>
-    </aside>
-  </main>
-
-  <script type="module" src="main.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
