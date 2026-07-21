@@ -1,112 +1,144 @@
-// CAROLINE — storage.js
-// Pure data-layer module: localStorage persistence for expenses.
-// No DOM access here — only load/save/add/delete logic.
+// ── Storage module ──────────────────────────────────────────────────────────
+// Persists flashcard data to localStorage under a fixed key.
+// Each flashcard object shape: { id, deck, front, back, createdAt }
 
-export const STORAGE_KEY = 'expenses';
+export const STORAGE_KEY = 'flashcards_app_v1';
 
-export const CATEGORIES = ['food', 'transport', 'home', 'fun', 'other'];
-
-function generateId() {
-  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-    return crypto.randomUUID();
-  }
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-}
+// ── Sample deck shown on very first load ──────────────────────────────────
+const SAMPLE_CARDS = [
+  { deck: 'Sample Deck', front: 'What is the capital of France?',      back: 'Paris' },
+  { deck: 'Sample Deck', front: 'What is 7 × 8?',                      back: '56' },
+  { deck: 'Sample Deck', front: 'What language does a browser run?',   back: 'JavaScript' },
+  { deck: 'Sample Deck', front: 'How many sides does a hexagon have?', back: '6' },
+  { deck: 'Sample Deck', front: 'What is H₂O commonly known as?',     back: 'Water' },
+];
 
 /**
- * Load all expenses from localStorage.
- * @returns {Array<{id:string, amount:number, category:string, date:string, note:string}>}
+ * Load all flashcards from localStorage.
+ * @returns {Array<{id: string, deck: string, front: string, back: string, createdAt: number}>}
  */
-export function loadExpenses() {
+export function loadCards() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
+    // Guard: must be an array
     if (!Array.isArray(parsed)) return [];
     return parsed;
-  } catch (err) {
-    console.error('CAROLINE: failed to load expenses from localStorage', err);
+  } catch {
+    // Corrupted data — return empty rather than crash
     return [];
   }
 }
 
 /**
- * Persist the full expenses array to localStorage.
- * @param {Array<object>} expenses
+ * Save the full flashcards array to localStorage.
+ * @param {Array<{id: string, deck: string, front: string, back: string, createdAt: number}>} cards
  */
-export function saveExpenses(expenses) {
+export function saveCards(cards) {
+  if (!Array.isArray(cards)) {
+    throw new TypeError('saveCards expects an array');
+  }
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
-  } catch (err) {
-    console.error('CAROLINE: failed to save expenses to localStorage', err);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
+  } catch (e) {
+    // e.g. storage quota exceeded — silently ignore so app keeps running
+    console.warn('[storage] Could not persist cards:', e);
   }
 }
 
 /**
- * Validate and add a new expense. Returns the updated list.
- * Throws an Error with a human-readable message if validation fails
- * (caller / UI is responsible for catching and displaying inline errors).
- *
- * @param {{amount:number|string, category:string, date:string, note?:string}} input
- * @returns {Array<object>} updated expenses array (already persisted)
+ * Add a single card. Generates a unique id and timestamp.
+ * Returns the updated cards array.
+ * @param {Array} cards  Existing cards array
+ * @param {{ deck: string, front: string, back: string }} cardData
+ * @returns {Array}
  */
-export function addExpense(input) {
-  const amount = Number(input.amount);
-
-  if (!Number.isFinite(amount) || amount <= 0) {
-    throw new Error('Amount must be a number greater than 0.');
-  }
-
-  if (!CATEGORIES.includes(input.category)) {
-    throw new Error('Category must be one of: ' + CATEGORIES.join(', '));
-  }
-
-  if (!input.date) {
-    throw new Error('Date is required.');
-  }
-
-  const expense = {
+export function addCard(cards, { deck, front, back }) {
+  const newCard = {
     id: generateId(),
-    amount: Math.round(amount * 100) / 100,
-    category: input.category,
-    date: input.date,
-    note: input.note ? String(input.note).trim() : ''
+    deck: deck.trim(),
+    front: front.trim(),
+    back: back.trim(),
+    createdAt: Date.now(),
   };
-
-  const expenses = loadExpenses();
-  expenses.push(expense);
-  saveExpenses(expenses);
-  return expenses;
+  const updated = [...cards, newCard];
+  saveCards(updated);
+  return updated;
 }
 
 /**
- * Delete an expense by id. Returns the updated list.
+ * Delete a card by id.
+ * Returns the updated cards array.
+ * @param {Array} cards
  * @param {string} id
- * @returns {Array<object>} updated expenses array (already persisted)
+ * @returns {Array}
  */
-export function deleteExpense(id) {
-  const expenses = loadExpenses().filter((exp) => exp.id !== id);
-  saveExpenses(expenses);
-  return expenses;
+export function deleteCard(cards, id) {
+  const updated = cards.filter(c => c.id !== id);
+  saveCards(updated);
+  return updated;
 }
 
 /**
- * Replace the entire expenses list (used for seeding sample data
- * or importing) and persist it.
- * @param {Array<object>} expenses
- * @returns {Array<object>}
+ * Return all unique deck names, sorted alphabetically.
+ * @param {Array} cards
+ * @returns {string[]}
  */
-export function setExpenses(expenses) {
-  const safe = Array.isArray(expenses) ? expenses : [];
-  saveExpenses(safe);
-  return safe;
+export function getDeckNames(cards) {
+  const names = new Set(cards.map(c => c.deck));
+  return [...names].sort((a, b) => a.localeCompare(b));
 }
 
 /**
- * Remove all stored expenses.
- * @returns {Array<object>} empty array
+ * Return cards belonging to a specific deck.
+ * @param {Array} cards
+ * @param {string} deckName
+ * @returns {Array}
  */
-export function clearExpenses() {
-  saveExpenses([]);
-  return [];
+export function getCardsByDeck(cards, deckName) {
+  return cards.filter(c => c.deck === deckName);
+}
+
+/**
+ * Seed the sample deck into localStorage if it is currently empty.
+ * Safe to call on every startup — it is a no-op when cards already exist.
+ *
+ * @returns {Array} The cards array after seeding (may be the original empty array
+ *                  that got populated, or the existing non-empty array untouched).
+ */
+export function seedSampleDeck() {
+  // Only seed when the key is completely absent from storage
+  if (localStorage.getItem(STORAGE_KEY) !== null) {
+    // Storage already has data (even if the user deleted all cards later —
+    // we respect their intent and do not re-inject the sample deck).
+    return loadCards();
+  }
+
+  let cards = [];
+  // Use a fixed base timestamp so createdAt ordering matches SAMPLE_CARDS order
+  const baseTime = Date.now();
+  SAMPLE_CARDS.forEach((c, i) => {
+    const newCard = {
+      id: generateId(),
+      deck: c.deck,
+      front: c.front,
+      back: c.back,
+      createdAt: baseTime + i, // ensure stable insertion order
+    };
+    cards = [...cards, newCard];
+  });
+
+  saveCards(cards);
+  return cards;
+}
+
+// ── Internal helpers ────────────────────────────────────────────────────────
+
+/**
+ * Generate a simple unique id (timestamp + random suffix).
+ * @returns {string}
+ */
+function generateId() {
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }

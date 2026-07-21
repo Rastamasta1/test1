@@ -1,94 +1,219 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CAROLINE — Expense Tracker</title>
-<link rel="stylesheet" href="styles/main.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flashcards</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="app">
-    <header class="app-header">
-      <h1 class="app-title">CAROLINE</h1>
-      <p class="app-subtitle">Personal Expense Tracker</p>
-    </header>
+<div class="app-wrapper">
 
-    <nav class="tab-nav" id="tab-nav">
-      <button class="tab-btn is-active" type="button" data-view="add-view" id="tab-add">Add</button>
-      <button class="tab-btn" type="button" data-view="summary-view" id="tab-summary">Summary</button>
-    </nav>
+  <!-- ══ Header ══ -->
+  <header>
+    <div class="header-inner">
+      <a href="#" class="app-logo" aria-label="Flashcards home">
+        <span class="logo-icon" aria-hidden="true">Fc</span>
+        <span class="app-name">Flashcards</span>
+      </a>
+    </div>
+  </header>
 
-    <main class="views">
-      <section id="add-view" class="view is-active" aria-labelledby="tab-add">
-        <form id="expense-form" class="expense-form" novalidate>
-          <div class="form-field">
-            <label for="expense-amount">Amount (USD)</label>
+  <!-- ══ Tab Navigation ══ -->
+  <nav class="tab-nav" role="tablist" aria-label="Main navigation">
+    <div class="tab-nav-inner">
+      <button
+        class="tab-btn active"
+        id="tab-cards"
+        role="tab"
+        aria-selected="true"
+        aria-controls="cards-view"
+        data-tab="cards"
+      >
+        <span class="tab-icon" aria-hidden="true">🗂️</span>
+        Cards
+      </button>
+      <button
+        class="tab-btn"
+        id="tab-study"
+        role="tab"
+        aria-selected="false"
+        aria-controls="study-view"
+        data-tab="study"
+      >
+        <span class="tab-icon" aria-hidden="true">🎯</span>
+        Study
+      </button>
+    </div>
+  </nav>
+
+  <!-- ══ Main Content ══ -->
+  <main>
+
+    <!-- ── Cards View ── -->
+    <section
+      id="cards-view"
+      class="view active"
+      role="tabpanel"
+      aria-labelledby="tab-cards"
+    >
+
+      <!-- Add Card Form -->
+      <div class="card" id="add-card-section">
+        <form id="add-card-form" novalidate autocomplete="off">
+          <h2>Add Flashcard</h2>
+
+          <!-- Deck name with autocomplete -->
+          <div class="form-group">
+            <label for="input-deck">Deck</label>
             <input
-              type="number"
-              id="expense-amount"
-              name="amount"
-              placeholder="0.00"
-              step="0.01"
-              min="0.01"
-              inputmode="decimal"
-              required
-            >
-            <span class="field-error" id="expense-amount-error" aria-live="polite"></span>
+              type="text"
+              id="input-deck"
+              name="deck"
+              list="deck-suggestions"
+              placeholder="e.g. Spanish Vocab"
+              maxlength="80"
+            />
+            <datalist id="deck-suggestions"></datalist>
+            <span class="field-error" id="error-deck" role="alert" aria-live="polite">
+              ⚠ Deck name is required.
+            </span>
           </div>
 
-          <div class="form-field">
-            <label for="expense-category">Category</label>
-            <select id="expense-category" name="category" required>
-              <option value="food">Food</option>
-              <option value="transport">Transport</option>
-              <option value="home">Home</option>
-              <option value="fun">Fun</option>
-              <option value="other">Other</option>
-            </select>
-            <span class="field-error" id="expense-category-error" aria-live="polite"></span>
+          <!-- Front text -->
+          <div class="form-group">
+            <label for="input-front">Front</label>
+            <textarea
+              id="input-front"
+              name="front"
+              rows="2"
+              placeholder="Question or term…"
+              maxlength="500"
+            ></textarea>
+            <span class="field-error" id="error-front" role="alert" aria-live="polite">
+              ⚠ Front text is required.
+            </span>
           </div>
 
-          <div class="form-field">
-            <label for="expense-date">Date</label>
-            <input type="date" id="expense-date" name="date" required>
-            <span class="field-error" id="expense-date-error" aria-live="polite"></span>
+          <!-- Back text -->
+          <div class="form-group">
+            <label for="input-back">Back</label>
+            <textarea
+              id="input-back"
+              name="back"
+              rows="2"
+              placeholder="Answer or definition…"
+              maxlength="500"
+            ></textarea>
+            <span class="field-error" id="error-back" role="alert" aria-live="polite">
+              ⚠ Back text is required.
+            </span>
           </div>
 
-          <div class="form-field">
-            <label for="expense-note">Note (optional)</label>
-            <input type="text" id="expense-note" name="note" placeholder="e.g. Groceries" maxlength="140">
+          <div class="form-submit-row">
+            <button type="submit" class="btn btn-primary">
+              <span aria-hidden="true">＋</span> Add Card
+            </button>
           </div>
-
-          <button type="submit" class="btn-primary" id="expense-submit">Add Expense</button>
         </form>
+      </div>
 
-        <ul id="expense-list" class="expense-list" aria-live="polite">
-          <!-- Sprint 1: rendered expense rows with delete buttons go here -->
-        </ul>
-      </section>
+      <!-- Deck / Card List -->
+      <div id="deck-list-container" role="region" aria-live="polite" aria-label="Your decks">
+        <!-- Deck groups injected by JS -->
+        <div class="empty-state" id="empty-cards-state">
+          <div class="empty-icon">📭</div>
+          <p>No cards yet. Add your first one above!</p>
+        </div>
+      </div>
 
-      <section id="summary-view" class="view" aria-labelledby="tab-summary">
-        <div class="summary-controls">
-          <label for="summary-month-select">Month</label>
-          <select id="summary-month-select" aria-label="Select month"></select>
+    </section>
+
+    <!-- ── Study View ── -->
+    <section
+      id="study-view"
+      class="view"
+      role="tabpanel"
+      aria-labelledby="tab-study"
+    >
+
+      <!-- Deck Picker (shown before a study session starts) -->
+      <div class="study-setup" id="study-setup">
+        <h2>Choose a Deck to Study</h2>
+        <div class="deck-picker-list" id="deck-picker-list" role="list" aria-label="Available decks">
+          <!-- Populated by JS -->
+          <div class="empty-state" id="empty-study-state">
+            <div class="empty-icon">📚</div>
+            <p>No decks yet. Add some cards first!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Study Session (hidden until a deck is chosen) -->
+      <div class="study-session card" id="study-session" aria-live="polite">
+
+        <!-- Progress bar -->
+        <div class="study-progress" id="study-progress" aria-label="Study progress">
+          <span id="progress-label">1 of 10</span>
+          <div class="study-progress-bar-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-bar-role">
+            <div class="study-progress-bar" id="study-progress-bar" style="width:0%"></div>
+          </div>
+          <button class="btn btn-outline" id="btn-exit-study" style="padding:5px 12px;font-size:0.82rem;">✕ Exit</button>
         </div>
 
-        <div id="summary-bars" class="summary-bars" aria-live="polite">
-          <!-- Sprint 2: per-category horizontal bars rendered here by src/summaryView.js -->
+        <!-- Flip card -->
+        <div class="flip-card-wrapper">
+          <div class="flip-card" id="flip-card" role="button" tabindex="0" aria-label="Flashcard – click to flip">
+            <div class="flip-card-face flip-card-front" aria-hidden="false">
+              <div class="flip-card-label">Front</div>
+              <div class="flip-card-text" id="card-front-text">…</div>
+              <div class="flip-hint">Tap to reveal answer</div>
+            </div>
+            <div class="flip-card-face flip-card-back" aria-hidden="true">
+              <div class="flip-card-label">Back</div>
+              <div class="flip-card-text" id="card-back-text">…</div>
+            </div>
+          </div>
         </div>
 
-        <div class="summary-total-row">
-          <span class="summary-total-label">Grand Total</span>
-          <span id="summary-grand-total" class="summary-total-amount">$0.00</span>
+        <!-- Action buttons (visible after flip) -->
+        <div class="study-actions" id="study-actions" style="display:none;">
+          <button class="btn btn-outline" id="btn-again">🔁 Again</button>
+          <button class="btn btn-success" id="btn-gotit">✔ Got it</button>
         </div>
 
-        <div class="summary-actions">
-          <button type="button" id="summary-clear-btn" class="btn-danger">Clear all data</button>
-        </div>
-      </section>
-    </main>
-  </div>
+      </div>
 
-  <script type="module" src="src/app.js"></script>
+      <!-- Round Complete -->
+      <div class="round-complete card" id="round-complete">
+        <div class="complete-icon" aria-hidden="true">🎉</div>
+        <h2>Round Complete!</h2>
+        <p id="round-summary-text">Great job finishing this round.</p>
+        <div class="summary-stats">
+          <div class="stat-item">
+            <span class="stat-value" id="stat-got-it">0</span>
+            <span class="stat-label">Got it</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value" id="stat-again">0</span>
+            <span class="stat-label">Missed</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value" id="stat-total">0</span>
+            <span class="stat-label">Total</span>
+          </div>
+        </div>
+        <div class="round-complete-actions">
+          <button class="btn btn-primary" id="btn-study-again">🔄 Study Again</button>
+          <button class="btn btn-secondary" id="btn-pick-deck">🗂️ Pick Deck</button>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<script type="module" src="app.js"></script>
 </body>
 </html>
