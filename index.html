@@ -3,214 +3,92 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Split the Bill</title>
-<style>
-  :root {
-    --accent: #2f7d5a;
-    --bg: #f7f7f8;
-    --card-bg: #ffffff;
-    --text: #222;
-    --muted: #666;
-    --error: #c0392b;
-    --radius: 10px;
-  }
-  * { box-sizing: border-box; }
-  html, body {
-    height: 100%;
-  }
-  body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 20px;
-    min-height: 100vh;
-  }
-  .card {
-    background: var(--card-bg);
-    border-radius: var(--radius);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    padding: 24px;
-    width: 100%;
-    max-width: 420px;
-  }
-  h1 {
-    font-size: 1.4rem;
-    margin: 0 0 20px;
-    text-align: center;
-  }
-  label {
-    display: block;
-    font-size: 0.9rem;
-    color: var(--muted);
-    margin-bottom: 6px;
-    margin-top: 16px;
-  }
-  input[type="number"], input[type="text"] {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #ddd;
-    border-radius: var(--radius);
-    font-size: 1rem;
-    min-height: 44px;
-  }
-  input:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(47, 125, 90, 0.15);
-  }
-  .tip-buttons {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-    flex-wrap: wrap;
-  }
-  .tip-btn {
-    flex: 1 1 30%;
-    min-width: 70px;
-    min-height: 44px;
-    padding: 10px 0;
-    border: 1px solid var(--accent);
-    background: transparent;
-    color: var(--accent);
-    border-radius: var(--radius);
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-  }
-  .tip-btn:hover {
-    background: rgba(47, 125, 90, 0.08);
-  }
-  .tip-btn.active {
-    background: var(--accent);
-    color: #fff;
-  }
-  .error {
-    color: var(--error);
-    font-size: 0.85rem;
-    margin-top: 6px;
-    min-height: 1.1em;
-    line-height: 1.3;
-  }
-  .results {
-    margin-top: 24px;
-    border-top: 1px solid #eee;
-    padding-top: 16px;
-  }
-  .result-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 6px 0;
-    font-size: 1rem;
-    gap: 8px;
-  }
-  .result-row.total {
-    font-weight: 600;
-  }
-  .result-row.per-person {
-    font-weight: 700;
-    color: var(--accent);
-    font-size: 1.15rem;
-  }
-  .actions {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-  }
-  #reset-btn {
-    background: #eee;
-    border: none;
-    padding: 10px 20px;
-    min-height: 44px;
-    border-radius: var(--radius);
-    cursor: pointer;
-    font-size: 0.95rem;
-    color: var(--text);
-    width: 100%;
-    max-width: 200px;
-  }
-  #reset-btn:hover {
-    background: #e0e0e0;
-  }
-
-  /* Mobile-friendly refinements for small screens */
-  @media (max-width: 480px) {
-    body {
-      padding: 12px;
-    }
-    .card {
-      padding: 18px;
-      border-radius: 8px;
-    }
-    h1 {
-      font-size: 1.25rem;
-      margin-bottom: 14px;
-    }
-    label {
-      margin-top: 12px;
-      font-size: 0.85rem;
-    }
-    .tip-buttons {
-      gap: 6px;
-    }
-    .tip-btn {
-      font-size: 0.95rem;
-      flex: 1 1 28%;
-    }
-    .result-row.per-person {
-      font-size: 1.05rem;
-    }
-    #reset-btn {
-      max-width: 100%;
-    }
-  }
-</style>
+<title>CAROLINE — Expense Tracker</title>
+<link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
-  <div class="card">
-    <h1>Split the Bill</h1>
-    <form id="bill-form" novalidate>
-      <label for="total">Total bill amount</label>
-      <input type="text" id="total" inputmode="decimal" placeholder="e.g. 45.50" autocomplete="off">
-      <div class="error" id="total-error"></div>
+  <div class="app">
+    <header class="app-header">
+      <h1 class="app-title">CAROLINE</h1>
+      <p class="app-subtitle">Personal Expense Tracker</p>
+    </header>
 
-      <label>Tip percentage</label>
-      <div class="tip-buttons">
-        <button type="button" class="tip-btn" data-tip="10">10%</button>
-        <button type="button" class="tip-btn" data-tip="15">15%</button>
-        <button type="button" class="tip-btn" data-tip="20">20%</button>
-      </div>
-      <input type="text" id="custom-tip" inputmode="decimal" placeholder="Custom tip % (optional)" autocomplete="off" style="margin-top:10px;">
-      <div class="error" id="tip-error"></div>
+    <nav class="tab-nav" id="tab-nav">
+      <button class="tab-btn is-active" type="button" data-view="add-view" id="tab-add">Add</button>
+      <button class="tab-btn" type="button" data-view="summary-view" id="tab-summary">Summary</button>
+    </nav>
 
-      <label for="people">Number of people</label>
-      <input type="text" id="people" inputmode="numeric" placeholder="e.g. 4" autocomplete="off">
-      <div class="error" id="people-error"></div>
+    <main class="views">
+      <section id="add-view" class="view is-active" aria-labelledby="tab-add">
+        <form id="expense-form" class="expense-form" novalidate>
+          <div class="form-field">
+            <label for="expense-amount">Amount (USD)</label>
+            <input
+              type="number"
+              id="expense-amount"
+              name="amount"
+              placeholder="0.00"
+              step="0.01"
+              min="0.01"
+              inputmode="decimal"
+              required
+            >
+            <span class="field-error" id="expense-amount-error" aria-live="polite"></span>
+          </div>
 
-      <div class="results">
-        <div class="result-row">
-          <span>Tip amount</span>
-          <span id="tip-amount">$0.00</span>
+          <div class="form-field">
+            <label for="expense-category">Category</label>
+            <select id="expense-category" name="category" required>
+              <option value="food">Food</option>
+              <option value="transport">Transport</option>
+              <option value="home">Home</option>
+              <option value="fun">Fun</option>
+              <option value="other">Other</option>
+            </select>
+            <span class="field-error" id="expense-category-error" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field">
+            <label for="expense-date">Date</label>
+            <input type="date" id="expense-date" name="date" required>
+            <span class="field-error" id="expense-date-error" aria-live="polite"></span>
+          </div>
+
+          <div class="form-field">
+            <label for="expense-note">Note (optional)</label>
+            <input type="text" id="expense-note" name="note" placeholder="e.g. Groceries" maxlength="140">
+          </div>
+
+          <button type="submit" class="btn-primary" id="expense-submit">Add Expense</button>
+        </form>
+
+        <ul id="expense-list" class="expense-list" aria-live="polite">
+          <!-- Sprint 1: rendered expense rows with delete buttons go here -->
+        </ul>
+      </section>
+
+      <section id="summary-view" class="view" aria-labelledby="tab-summary">
+        <div class="summary-controls">
+          <label for="summary-month-select">Month</label>
+          <select id="summary-month-select" aria-label="Select month"></select>
         </div>
-        <div class="result-row total">
-          <span>Total with tip</span>
-          <span id="total-with-tip">$0.00</span>
-        </div>
-        <div class="result-row per-person">
-          <span>Per person</span>
-          <span id="per-person">$0.00</span>
-        </div>
-      </div>
 
-      <div class="actions">
-        <button type="button" id="reset-btn">Reset</button>
-      </div>
-    </form>
+        <div id="summary-bars" class="summary-bars" aria-live="polite">
+          <!-- Sprint 2: per-category horizontal bars rendered here by src/summaryView.js -->
+        </div>
+
+        <div class="summary-total-row">
+          <span class="summary-total-label">Grand Total</span>
+          <span id="summary-grand-total" class="summary-total-amount">$0.00</span>
+        </div>
+
+        <div class="summary-actions">
+          <button type="button" id="summary-clear-btn" class="btn-danger">Clear all data</button>
+        </div>
+      </section>
+    </main>
   </div>
 
-  <script type="module" src="app.js"></script>
+  <script type="module" src="src/app.js"></script>
 </body>
 </html>
