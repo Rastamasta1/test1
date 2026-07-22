@@ -1,94 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Would You Rather?</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤔</text></svg>" />
-  <link href="styles.css" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Clock</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #0d0d0d;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    .clock-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .clock {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: #111;
+      padding: 32px 48px;
+      border-radius: 16px;
+      box-shadow: 0 0 40px rgba(0, 255, 180, 0.15), 0 0 80px rgba(0, 255, 180, 0.05);
+      border: 1px solid rgba(0, 255, 180, 0.1);
+    }
+
+    .segment {
+      font-size: clamp(48px, 12vw, 120px);
+      font-weight: 700;
+      color: #00ffb4;
+      text-shadow:
+        0 0 10px rgba(0, 255, 180, 0.8),
+        0 0 20px rgba(0, 255, 180, 0.5),
+        0 0 40px rgba(0, 255, 180, 0.3);
+      letter-spacing: 2px;
+      min-width: 2ch;
+      text-align: center;
+      line-height: 1;
+    }
+
+    .colon {
+      font-size: clamp(40px, 10vw, 100px);
+      font-weight: 700;
+      color: #00ffb4;
+      text-shadow:
+        0 0 10px rgba(0, 255, 180, 0.8),
+        0 0 20px rgba(0, 255, 180, 0.5);
+      animation: blink 1s step-start infinite;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.15; }
+    }
+
+    .date {
+      font-size: clamp(14px, 3vw, 22px);
+      color: rgba(0, 255, 180, 0.55);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+  </style>
 </head>
 <body>
-
-  <header class="app-header">
-    <div class="header-inner">
-      <span class="header-logo" aria-hidden="true">🤔</span>
-      <h1 class="header-title">Would You Rather?</h1>
+  <div class="clock-container">
+    <div class="clock">
+      <span class="segment" id="hours">00</span>
+      <span class="colon">:</span>
+      <span class="segment" id="minutes">00</span>
+      <span class="colon">:</span>
+      <span class="segment" id="seconds">00</span>
     </div>
-  </header>
+    <div class="date" id="date"></div>
+  </div>
 
-  <nav class="tab-bar" role="tablist" aria-label="App sections">
-    <button
-      class="tab-btn tab-btn--active"
-      role="tab"
-      aria-selected="true"
-      aria-controls="view-game"
-      data-tab="game"
-      id="tab-game"
-    >
-      <span class="tab-icon" aria-hidden="true">🎮</span>
-      <span class="tab-label">Play</span>
-    </button>
-    <button
-      class="tab-btn"
-      role="tab"
-      aria-selected="false"
-      aria-controls="view-stats"
-      data-tab="stats"
-      id="tab-stats"
-    >
-      <span class="tab-icon" aria-hidden="true">📊</span>
-      <span class="tab-label">My Stats</span>
-    </button>
-    <button
-      class="tab-btn"
-      role="tab"
-      aria-selected="false"
-      aria-controls="view-add"
-      data-tab="add"
-      id="tab-add"
-    >
-      <span class="tab-icon" aria-hidden="true">✏️</span>
-      <span class="tab-label">Add Question</span>
-    </button>
-  </nav>
+  <script>
+    function pad(n) {
+      return String(n).padStart(2, '0');
+    }
 
-  <main class="app-main">
+    function tick() {
+      var now = new Date();
 
-    <!-- ── Game view ── -->
-    <section
-      id="view-game"
-      class="view view--active"
-      role="tabpanel"
-      aria-labelledby="tab-game"
-    >
-      <!-- Populated by app.js -->
-    </section>
+      document.getElementById('hours').textContent   = pad(now.getHours());
+      document.getElementById('minutes').textContent = pad(now.getMinutes());
+      document.getElementById('seconds').textContent = pad(now.getSeconds());
 
-    <!-- ── Stats view ── -->
-    <section
-      id="view-stats"
-      class="view"
-      role="tabpanel"
-      aria-labelledby="tab-stats"
-      hidden
-    >
-      <!-- Populated by app.js -->
-    </section>
+      var days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      var months = ['January','February','March','April','May','June',
+                    'July','August','September','October','November','December'];
 
-    <!-- ── Add-question view ── -->
-    <section
-      id="view-add"
-      class="view"
-      role="tabpanel"
-      aria-labelledby="tab-add"
-      hidden
-    >
-      <!-- Populated by app.js -->
-    </section>
+      document.getElementById('date').textContent =
+        days[now.getDay()] + ',\u00a0' +
+        months[now.getMonth()] + '\u00a0' +
+        now.getDate() + ',\u00a0' +
+        now.getFullYear();
+    }
 
-  </main>
-
-  <script type="module" src="app.js"></script>
-
+    tick();
+    setInterval(tick, 1000);
+  </script>
 </body>
 </html>
