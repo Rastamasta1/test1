@@ -3,134 +3,92 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pomodoro Focus Timer</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Would You Rather?</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤔</text></svg>" />
+  <link href="styles.css" rel="stylesheet" />
 </head>
 <body>
-  <div class="app" id="app">
 
-    <!-- Tab Navigation -->
-    <nav class="tabs" role="tablist" aria-label="Main navigation">
-      <button class="tab-btn active" role="tab" aria-selected="true"  data-tab="timer"  id="tab-timer">Timer</button>
-      <button class="tab-btn"        role="tab" aria-selected="false" data-tab="stats"  id="tab-stats">Stats</button>
-      <button class="tab-btn"        role="tab" aria-selected="false" data-tab="settings" id="tab-settings">Settings</button>
-    </nav>
+  <header class="app-header">
+    <div class="header-inner">
+      <span class="header-logo" aria-hidden="true">🤔</span>
+      <h1 class="header-title">Would You Rather?</h1>
+    </div>
+  </header>
 
-    <!-- ===== TIMER VIEW ===== -->
-    <section class="view active" id="view-timer" role="tabpanel" aria-labelledby="tab-timer">
+  <nav class="tab-bar" role="tablist" aria-label="App sections">
+    <button
+      class="tab-btn tab-btn--active"
+      role="tab"
+      aria-selected="true"
+      aria-controls="view-game"
+      data-tab="game"
+      id="tab-game"
+    >
+      <span class="tab-icon" aria-hidden="true">🎮</span>
+      <span class="tab-label">Play</span>
+    </button>
+    <button
+      class="tab-btn"
+      role="tab"
+      aria-selected="false"
+      aria-controls="view-stats"
+      data-tab="stats"
+      id="tab-stats"
+    >
+      <span class="tab-icon" aria-hidden="true">📊</span>
+      <span class="tab-label">My Stats</span>
+    </button>
+    <button
+      class="tab-btn"
+      role="tab"
+      aria-selected="false"
+      aria-controls="view-add"
+      data-tab="add"
+      id="tab-add"
+    >
+      <span class="tab-icon" aria-hidden="true">✏️</span>
+      <span class="tab-label">Add Question</span>
+    </button>
+  </nav>
 
-      <!-- Mode label -->
-      <p class="mode-label" id="mode-label" aria-live="polite">Work</p>
+  <main class="app-main">
 
-      <!-- Countdown display -->
-      <div class="timer-ring-wrapper" aria-live="off">
-        <svg class="timer-ring" viewBox="0 0 220 220" aria-hidden="true">
-          <circle class="ring-track" cx="110" cy="110" r="100" />
-          <circle class="ring-progress" id="ring-progress" cx="110" cy="110" r="100"
-                  stroke-dasharray="628.318"
-                  stroke-dashoffset="0"
-                  transform="rotate(-90 110 110)" />
-        </svg>
-        <div class="timer-display" id="timer-display" role="timer" aria-label="Time remaining">25:00</div>
-      </div>
-
-      <!-- Controls -->
-      <div class="controls" role="group" aria-label="Timer controls">
-        <button class="btn btn-primary" id="btn-start-pause" aria-pressed="false">Start</button>
-        <button class="btn btn-secondary" id="btn-reset">Reset</button>
-        <button class="btn btn-secondary" id="btn-skip" title="Skip to next phase">Skip →</button>
-      </div>
-
-      <!-- Session counter -->
-      <div class="session-info">
-        <span class="session-label">Sessions today</span>
-        <span class="session-count" id="session-count" aria-live="polite">0</span>
-      </div>
-
-      <!-- Phase progress dots -->
-      <div class="phase-dots" id="phase-dots" aria-label="Phase progress" role="img"></div>
-
+    <!-- ── Game view ── -->
+    <section
+      id="view-game"
+      class="view view--active"
+      role="tabpanel"
+      aria-labelledby="tab-game"
+    >
+      <!-- Populated by app.js -->
     </section>
 
-    <!-- ===== STATS VIEW ===== -->
-    <section class="view" id="view-stats" role="tabpanel" aria-labelledby="tab-stats" hidden>
-
-      <h2 class="view-title">History — last 7 days</h2>
-
-      <div class="stat-summary">
-        <div class="stat-card">
-          <span class="stat-value" id="total-focus-time">0 min</span>
-          <span class="stat-desc">Total focus time</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value" id="streak-display">0 🔥</span>
-          <span class="stat-desc">Day streak</span>
-        </div>
-      </div>
-
-      <!-- Horizontal bar chart -->
-      <div class="bar-chart" id="bar-chart" aria-label="Sessions per day"></div>
-
-      <button class="btn btn-danger" id="btn-clear-history">Clear history</button>
-
+    <!-- ── Stats view ── -->
+    <section
+      id="view-stats"
+      class="view"
+      role="tabpanel"
+      aria-labelledby="tab-stats"
+      hidden
+    >
+      <!-- Populated by app.js -->
     </section>
 
-    <!-- ===== SETTINGS VIEW ===== -->
-    <section class="view" id="view-settings" role="tabpanel" aria-labelledby="tab-settings" hidden>
-
-      <h2 class="view-title">Settings</h2>
-
-      <form id="settings-form" novalidate>
-
-        <fieldset class="settings-group">
-          <legend>Durations (minutes)</legend>
-
-          <label class="setting-row">
-            <span>Work session</span>
-            <input type="number" id="setting-work" name="work" min="1" max="120" value="25" />
-          </label>
-
-          <label class="setting-row">
-            <span>Short break</span>
-            <input type="number" id="setting-short-break" name="shortBreak" min="1" max="60" value="5" />
-          </label>
-
-          <label class="setting-row">
-            <span>Long break</span>
-            <input type="number" id="setting-long-break" name="longBreak" min="1" max="120" value="15" />
-          </label>
-
-          <label class="setting-row">
-            <span>Sessions before long break</span>
-            <input type="number" id="setting-long-break-interval" name="longBreakInterval" min="1" max="10" value="4" />
-          </label>
-        </fieldset>
-
-        <fieldset class="settings-group">
-          <legend>Notifications &amp; Sound</legend>
-
-          <label class="setting-row setting-toggle">
-            <span>Browser notifications</span>
-            <input type="checkbox" id="setting-notifications" name="notifications" />
-            <span class="toggle-track"><span class="toggle-thumb"></span></span>
-          </label>
-
-          <label class="setting-row setting-toggle">
-            <span>Sound alert</span>
-            <input type="checkbox" id="setting-sound" name="sound" checked />
-            <span class="toggle-track"><span class="toggle-thumb"></span></span>
-          </label>
-        </fieldset>
-
-        <button type="submit" class="btn btn-primary" id="btn-save-settings">Save settings</button>
-        <p class="settings-saved-msg" id="settings-saved-msg" aria-live="polite"></p>
-
-      </form>
-
+    <!-- ── Add-question view ── -->
+    <section
+      id="view-add"
+      class="view"
+      role="tabpanel"
+      aria-labelledby="tab-add"
+      hidden
+    >
+      <!-- Populated by app.js -->
     </section>
 
-  </div><!-- /.app -->
+  </main>
 
-  <script src="app.js"></script>
+  <script type="module" src="app.js"></script>
+
 </body>
 </html>
