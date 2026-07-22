@@ -3,92 +3,92 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Would You Rather?</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤔</text></svg>" />
-  <link href="styles.css" rel="stylesheet" />
+  <title>Coin Flip Decider</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <div class="app-wrapper">
+    <header>
+      <h1>Coin Flip Decider</h1>
+      <p class="subtitle">Let fate decide</p>
+    </header>
 
-  <header class="app-header">
-    <div class="header-inner">
-      <span class="header-logo" aria-hidden="true">🤔</span>
-      <h1 class="header-title">Would You Rather?</h1>
-    </div>
-  </header>
+    <main>
+      <!-- Coin -->
+      <div class="coin-container" aria-live="polite" aria-label="Coin animation area">
+        <div class="coin" id="coin">
+          <div class="coin-face coin-front">
+            <span class="coin-symbol">H</span>
+          </div>
+          <div class="coin-face coin-back">
+            <span class="coin-symbol">T</span>
+          </div>
+        </div>
+      </div>
 
-  <nav class="tab-bar" role="tablist" aria-label="App sections">
-    <button
-      class="tab-btn tab-btn--active"
-      role="tab"
-      aria-selected="true"
-      aria-controls="view-game"
-      data-tab="game"
-      id="tab-game"
-    >
-      <span class="tab-icon" aria-hidden="true">🎮</span>
-      <span class="tab-label">Play</span>
-    </button>
-    <button
-      class="tab-btn"
-      role="tab"
-      aria-selected="false"
-      aria-controls="view-stats"
-      data-tab="stats"
-      id="tab-stats"
-    >
-      <span class="tab-icon" aria-hidden="true">📊</span>
-      <span class="tab-label">My Stats</span>
-    </button>
-    <button
-      class="tab-btn"
-      role="tab"
-      aria-selected="false"
-      aria-controls="view-add"
-      data-tab="add"
-      id="tab-add"
-    >
-      <span class="tab-icon" aria-hidden="true">✏️</span>
-      <span class="tab-label">Add Question</span>
-    </button>
-  </nav>
+      <!-- Outcome label -->
+      <div class="outcome-label" id="outcome-label" aria-live="polite"></div>
 
-  <main class="app-main">
+      <!-- Flip button -->
+      <button class="btn-flip" id="btn-flip" type="button">
+        Flip!
+      </button>
 
-    <!-- ── Game view ── -->
-    <section
-      id="view-game"
-      class="view view--active"
-      role="tabpanel"
-      aria-labelledby="tab-game"
-    >
-      <!-- Populated by app.js -->
-    </section>
+      <!-- Custom outcome labels -->
+      <section class="label-section" aria-label="Customize outcome names">
+        <h2>Customize Outcomes</h2>
+        <div class="label-inputs">
+          <label class="label-group">
+            <span>Heads label</span>
+            <input
+              type="text"
+              id="heads-label"
+              placeholder="Heads"
+              maxlength="30"
+              aria-label="Heads outcome label"
+            />
+          </label>
+          <label class="label-group">
+            <span>Tails label</span>
+            <input
+              type="text"
+              id="tails-label"
+              placeholder="Tails"
+              maxlength="30"
+              aria-label="Tails outcome label"
+            />
+          </label>
+        </div>
+      </section>
 
-    <!-- ── Stats view ── -->
-    <section
-      id="view-stats"
-      class="view"
-      role="tabpanel"
-      aria-labelledby="tab-stats"
-      hidden
-    >
-      <!-- Populated by app.js -->
-    </section>
+      <!-- Tally -->
+      <section class="tally-section" aria-label="Session results tally">
+        <h2>Session Tally</h2>
+        <div class="tally-display">
+          <div class="tally-item" id="tally-heads">
+            <span class="tally-name" id="tally-heads-name">Heads</span>
+            <span class="tally-count" id="tally-heads-count">0</span>
+          </div>
+          <div class="tally-divider"></div>
+          <div class="tally-item" id="tally-tails">
+            <span class="tally-name" id="tally-tails-name">Tails</span>
+            <span class="tally-count" id="tally-tails-count">0</span>
+          </div>
+        </div>
+        <div class="tally-total">
+          Total flips: <span id="tally-total">0</span>
+        </div>
+        <button class="btn-reset" id="btn-reset" type="button">
+          Reset Tally
+        </button>
+      </section>
+    </main>
 
-    <!-- ── Add-question view ── -->
-    <section
-      id="view-add"
-      class="view"
-      role="tabpanel"
-      aria-labelledby="tab-add"
-      hidden
-    >
-      <!-- Populated by app.js -->
-    </section>
-
-  </main>
+    <footer>
+      <p>Results are session-only &mdash; refresh to start fresh</p>
+    </footer>
+  </div>
 
   <script type="module" src="app.js"></script>
-
 </body>
 </html>
