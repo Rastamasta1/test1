@@ -3,92 +3,93 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Would You Rather?</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤔</text></svg>" />
+  <title>Pomodoro Timer</title>
   <link href="styles.css" rel="stylesheet" />
 </head>
 <body>
+  <div class="app">
+    <header class="app-header">
+      <h1 class="app-title">Pomodoro Timer</h1>
+    </header>
 
-  <header class="app-header">
-    <div class="header-inner">
-      <span class="header-logo" aria-hidden="true">🤔</span>
-      <h1 class="header-title">Would You Rather?</h1>
-    </div>
-  </header>
+    <nav class="mode-tabs" role="tablist" aria-label="Timer mode">
+      <button
+        class="mode-tab active"
+        role="tab"
+        aria-selected="true"
+        aria-controls="timer-panel"
+        data-mode="pomodoro"
+        id="tab-pomodoro"
+      >Pomodoro</button>
+      <button
+        class="mode-tab"
+        role="tab"
+        aria-selected="false"
+        aria-controls="timer-panel"
+        data-mode="short-break"
+        id="tab-short-break"
+      >Short Break</button>
+      <button
+        class="mode-tab"
+        role="tab"
+        aria-selected="false"
+        aria-controls="timer-panel"
+        data-mode="long-break"
+        id="tab-long-break"
+      >Long Break</button>
+    </nav>
 
-  <nav class="tab-bar" role="tablist" aria-label="App sections">
-    <button
-      class="tab-btn tab-btn--active"
-      role="tab"
-      aria-selected="true"
-      aria-controls="view-game"
-      data-tab="game"
-      id="tab-game"
-    >
-      <span class="tab-icon" aria-hidden="true">🎮</span>
-      <span class="tab-label">Play</span>
-    </button>
-    <button
-      class="tab-btn"
-      role="tab"
-      aria-selected="false"
-      aria-controls="view-stats"
-      data-tab="stats"
-      id="tab-stats"
-    >
-      <span class="tab-icon" aria-hidden="true">📊</span>
-      <span class="tab-label">My Stats</span>
-    </button>
-    <button
-      class="tab-btn"
-      role="tab"
-      aria-selected="false"
-      aria-controls="view-add"
-      data-tab="add"
-      id="tab-add"
-    >
-      <span class="tab-icon" aria-hidden="true">✏️</span>
-      <span class="tab-label">Add Question</span>
-    </button>
-  </nav>
+    <main class="timer-panel" id="timer-panel" role="tabpanel">
+      <div class="timer-ring-wrapper" aria-live="polite" aria-atomic="true">
+        <svg class="timer-ring" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle class="ring-track" cx="100" cy="100" r="88" />
+          <circle class="ring-progress" id="ring-progress" cx="100" cy="100" r="88" />
+        </svg>
+        <div class="timer-display">
+          <span class="timer-time" id="timer-display">25:00</span>
+          <span class="timer-label" id="timer-label">Focus</span>
+        </div>
+      </div>
 
-  <main class="app-main">
+      <div class="controls" role="group" aria-label="Timer controls">
+        <button class="btn btn-secondary" id="btn-reset" aria-label="Reset timer" title="Reset">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="1 4 1 10 7 10"/>
+            <path d="M3.51 15a9 9 0 1 0 .49-3.36"/>
+          </svg>
+        </button>
 
-    <!-- ── Game view ── -->
-    <section
-      id="view-game"
-      class="view view--active"
-      role="tabpanel"
-      aria-labelledby="tab-game"
-    >
-      <!-- Populated by app.js -->
-    </section>
+        <button class="btn btn-primary" id="btn-start" aria-label="Start timer">
+          <span id="btn-start-label">Start</span>
+        </button>
 
-    <!-- ── Stats view ── -->
-    <section
-      id="view-stats"
-      class="view"
-      role="tabpanel"
-      aria-labelledby="tab-stats"
-      hidden
-    >
-      <!-- Populated by app.js -->
-    </section>
+        <button class="btn btn-secondary" id="btn-skip" aria-label="Skip to next session" title="Skip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="5 4 15 12 5 20 5 4"/>
+            <line x1="19" y1="5" x2="19" y2="19"/>
+          </svg>
+        </button>
+      </div>
 
-    <!-- ── Add-question view ── -->
-    <section
-      id="view-add"
-      class="view"
-      role="tabpanel"
-      aria-labelledby="tab-add"
-      hidden
-    >
-      <!-- Populated by app.js -->
-    </section>
+      <div class="session-info">
+        <span class="session-count-label">Session</span>
+        <span class="session-count" id="session-count">1</span>
+        <span class="session-count-label">of 4</span>
+      </div>
 
-  </main>
+      <div class="pomodoro-dots" id="pomodoro-dots" aria-label="Session progress">
+        <span class="dot active" data-index="0"></span>
+        <span class="dot" data-index="1"></span>
+        <span class="dot" data-index="2"></span>
+        <span class="dot" data-index="3"></span>
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      <p class="footer-tip">Stay focused. Take breaks. Repeat.</p>
+    </footer>
+  </div>
 
   <script type="module" src="app.js"></script>
-
 </body>
 </html>
