@@ -3,92 +3,112 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Would You Rather?</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤔</text></svg>" />
+  <title>Recipe Collection</title>
   <link href="styles.css" rel="stylesheet" />
 </head>
 <body>
+  <div id="app">
+    <header class="app-header">
+      <div class="header-inner">
+        <h1 class="app-title">&#127859; Recipe Collection</h1>
+        <button id="btn-new-recipe" class="btn btn-primary">+ New Recipe</button>
+      </div>
+    </header>
 
-  <header class="app-header">
-    <div class="header-inner">
-      <span class="header-logo" aria-hidden="true">🤔</span>
-      <h1 class="header-title">Would You Rather?</h1>
+    <main class="app-main">
+      <section class="search-section">
+        <label for="search-input" class="sr-only">Search recipes by name</label>
+        <input
+          id="search-input"
+          type="search"
+          class="search-input"
+          placeholder="Search recipes by name&hellip;"
+          autocomplete="off"
+        />
+      </section>
+
+      <section class="recipes-section">
+        <p id="empty-state" class="empty-state" hidden>No recipes yet. Click &ldquo;+ New Recipe&rdquo; to add one!</p>
+        <ul id="recipe-list" class="recipe-list" aria-label="Recipe list"></ul>
+      </section>
+    </main>
+  </div>
+
+  <!-- Recipe Form Modal -->
+  <div id="modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modal-title" class="modal-title">New Recipe</h2>
+        <button id="btn-close-modal" class="btn-icon" aria-label="Close modal">&times;</button>
+      </div>
+
+      <form id="recipe-form" novalidate>
+        <input type="hidden" id="recipe-id" />
+
+        <div class="form-group">
+          <label for="recipe-name" class="form-label">Recipe Name <span class="required">*</span></label>
+          <input
+            id="recipe-name"
+            type="text"
+            class="form-input"
+            placeholder="e.g. Spaghetti Bolognese"
+            required
+            maxlength="120"
+          />
+          <span class="field-error" id="error-name" role="alert" hidden>Recipe name is required.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="recipe-description" class="form-label">Description</label>
+          <textarea
+            id="recipe-description"
+            class="form-input form-textarea"
+            placeholder="A short description of the recipe&hellip;"
+            rows="3"
+            maxlength="500"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Ingredients <span class="required">*</span></label>
+          <div id="ingredients-list" class="ingredients-list" aria-label="Ingredients"></div>
+          <button type="button" id="btn-add-ingredient" class="btn btn-secondary btn-sm">+ Add Ingredient</button>
+          <span class="field-error" id="error-ingredients" role="alert" hidden>At least one ingredient is required.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="recipe-steps" class="form-label">Steps / Instructions</label>
+          <textarea
+            id="recipe-steps"
+            class="form-input form-textarea"
+            placeholder="Describe the cooking steps&hellip;"
+            rows="5"
+            maxlength="2000"
+          ></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="btn-cancel" class="btn btn-ghost">Cancel</button>
+          <button type="submit" id="btn-save" class="btn btn-primary">Save Recipe</button>
+        </div>
+      </form>
     </div>
-  </header>
+  </div>
 
-  <nav class="tab-bar" role="tablist" aria-label="App sections">
-    <button
-      class="tab-btn tab-btn--active"
-      role="tab"
-      aria-selected="true"
-      aria-controls="view-game"
-      data-tab="game"
-      id="tab-game"
-    >
-      <span class="tab-icon" aria-hidden="true">🎮</span>
-      <span class="tab-label">Play</span>
-    </button>
-    <button
-      class="tab-btn"
-      role="tab"
-      aria-selected="false"
-      aria-controls="view-stats"
-      data-tab="stats"
-      id="tab-stats"
-    >
-      <span class="tab-icon" aria-hidden="true">📊</span>
-      <span class="tab-label">My Stats</span>
-    </button>
-    <button
-      class="tab-btn"
-      role="tab"
-      aria-selected="false"
-      aria-controls="view-add"
-      data-tab="add"
-      id="tab-add"
-    >
-      <span class="tab-icon" aria-hidden="true">✏️</span>
-      <span class="tab-label">Add Question</span>
-    </button>
-  </nav>
-
-  <main class="app-main">
-
-    <!-- ── Game view ── -->
-    <section
-      id="view-game"
-      class="view view--active"
-      role="tabpanel"
-      aria-labelledby="tab-game"
-    >
-      <!-- Populated by app.js -->
-    </section>
-
-    <!-- ── Stats view ── -->
-    <section
-      id="view-stats"
-      class="view"
-      role="tabpanel"
-      aria-labelledby="tab-stats"
-      hidden
-    >
-      <!-- Populated by app.js -->
-    </section>
-
-    <!-- ── Add-question view ── -->
-    <section
-      id="view-add"
-      class="view"
-      role="tabpanel"
-      aria-labelledby="tab-add"
-      hidden
-    >
-      <!-- Populated by app.js -->
-    </section>
-
-  </main>
+  <!-- Delete Confirmation Modal -->
+  <div id="confirm-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="confirm-title" hidden>
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2 id="confirm-title" class="modal-title">Delete Recipe</h2>
+      </div>
+      <p class="confirm-message">Are you sure you want to delete this recipe? This action cannot be undone.</p>
+      <div class="modal-footer">
+        <button id="btn-cancel-delete" class="btn btn-ghost">Cancel</button>
+        <button id="btn-confirm-delete" class="btn btn-danger">Delete</button>
+      </div>
+    </div>
+  </div>
 
   <script type="module" src="app.js"></script>
-
 </body>
 </html>
