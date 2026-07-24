@@ -1,69 +1,92 @@
-/**
- * app.js — entry point for Would You Rather.
- *
- * Responsibilities:
- *  - Tab switching (Play / My Stats / Add Question)
- *  - Initialize game view via game.js
- *  - Render stats view via stats.js
- *  - Render add-question form via addQuestion.js
- */
+// Pomodoro timer state machine: 25/5 work/break cycles.
+// Plain browser JS, no build step. Loaded as a module from index.html.
 
-import { initGame, resetGame } from './game.js';
-import { addQuestion } from './storage.js';
-import { renderStats } from './stats.js';
-import { renderAddQuestion } from './addQuestion.js';
-import { seedSampleIfNeeded } from './customQuestions.js';
+const WORK_SECONDS = 25 * 60;
+const BREAK_SECONDS = 5 * 60;
 
-// ── DOM refs ──────────────────────────────────────────────────────────────
-const tabs = document.querySelectorAll('.tab-btn');
-const views = {
-  game:  document.getElementById('view-game'),
-  stats: document.getElementById('view-stats'),
-  add:   document.getElementById('view-add'),
+const phaseEl = document.getElementById('phase');
+const timerEl = document.getElementById('timer');
+const startBtn = document.getElementById('start');
+const pauseBtn = document.getElementById('pause');
+const resetBtn = document.getElementById('reset');
+const sessionCountEl = document.getElementById('session-count');
+
+const state = {
+  phase: 'work',        // 'work' | 'break'
+  remaining: WORK_SECONDS,
+  running: false,
+  sessions: 0,
+  intervalId: null,
 };
 
-// ── Tab switching ─────────────────────────────────────────────────────────
-function activateTab(name) {
-  tabs.forEach(btn => {
-    const active = btn.dataset.tab === name;
-    btn.classList.toggle('tab-btn--active', active);
-    btn.setAttribute('aria-selected', String(active));
-  });
-
-  Object.entries(views).forEach(([key, el]) => {
-    if (key === name) {
-      el.removeAttribute('hidden');
-      el.classList.add('view--active');
-    } else {
-      el.setAttribute('hidden', '');
-      el.classList.remove('view--active');
-    }
-  });
-
-  if (name === 'stats') renderStatsView();
-  if (name === 'add')   renderAddView();
+function phaseDuration(phase) {
+  return phase === 'work' ? WORK_SECONDS : BREAK_SECONDS;
 }
 
-tabs.forEach(btn => {
-  btn.addEventListener('click', () => activateTab(btn.dataset.tab));
-});
-
-// ── Stats view ────────────────────────────────────────────────────────────
-function renderStatsView() {
-  renderStats(views.stats, {
-    onReset: () => resetGame(),
-    onMutate: () => resetGame(),
-  });
+function phaseLabel(phase) {
+  return phase === 'work' ? 'Work' : 'Break';
 }
 
-// ── Add Question view ─────────────────────────────────────────────────────
-function renderAddView() {
-  renderAddQuestion(views.add, {
-    onSave: () => resetGame(),
-  });
+function formatTime(totalSeconds) {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
 
-// ── Boot ──────────────────────────────────────────────────────────────────
-seedSampleIfNeeded();
-initGame(views.game);
-activateTab('game');
+function render() {
+  phaseEl.textContent = phaseLabel(state.phase);
+  timerEl.textContent = formatTime(state.remaining);
+  sessionCountEl.textContent = String(state.sessions);
+}
+
+// Move from the finished phase to the next one. A completed work phase
+// increments the session counter before switching to a break.
+function advancePhase() {
+  if (state.phase === 'work') {
+    state.sessions += 1;
+    state.phase = 'break';
+  } else {
+    state.phase = 'work';
+  }
+  state.remaining = phaseDuration(state.phase);
+}
+
+function tick() {
+  if (state.remaining > 0) {
+    state.remaining -= 1;
+  }
+  if (state.remaining === 0) {
+    advancePhase();
+  }
+  render();
+}
+
+function start() {
+  if (state.running) return;
+  state.running = true;
+  state.intervalId = setInterval(tick, 1000);
+}
+
+function pause() {
+  state.running = false;
+  if (state.intervalId !== null) {
+    clearInterval(state.intervalId);
+    state.intervalId = null;
+  }
+}
+
+function reset() {
+  pause();
+  state.phase = 'work';
+  state.remaining = WORK_SECONDS;
+  state.sessions = 0;
+  render();
+}
+
+startBtn.addEventListener('click', start);
+pauseBtn.addEventListener('click', pause);
+resetBtn.addEventListener('click', reset);
+
+render();
+
+export { state, start, pause, reset, tick, advancePhase, formatTime };
