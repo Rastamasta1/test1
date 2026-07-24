@@ -1,69 +1,58 @@
-/**
- * app.js — entry point for Would You Rather.
- *
- * Responsibilities:
- *  - Tab switching (Play / My Stats / Add Question)
- *  - Initialize game view via game.js
- *  - Render stats view via stats.js
- *  - Render add-question form via addQuestion.js
- */
+// Tip calculator: reads bill / tip / split inputs and renders live total per person.
 
-import { initGame, resetGame } from './game.js';
-import { addQuestion } from './storage.js';
-import { renderStats } from './stats.js';
-import { renderAddQuestion } from './addQuestion.js';
-import { seedSampleIfNeeded } from './customQuestions.js';
+const billInput = document.getElementById('bill');
+const tipButtons = document.querySelectorAll('.tip-btn');
+const peopleOutput = document.getElementById('people');
+const decrementBtn = document.getElementById('decrement');
+const incrementBtn = document.getElementById('increment');
+const perPersonOutput = document.getElementById('perPerson');
 
-// ── DOM refs ──────────────────────────────────────────────────────────────
-const tabs = document.querySelectorAll('.tab-btn');
-const views = {
-  game:  document.getElementById('view-game'),
-  stats: document.getElementById('view-stats'),
-  add:   document.getElementById('view-add'),
+const state = {
+  bill: 0,
+  tipPercent: 0,
+  people: 1,
 };
 
-// ── Tab switching ─────────────────────────────────────────────────────────
-function activateTab(name) {
-  tabs.forEach(btn => {
-    const active = btn.dataset.tab === name;
-    btn.classList.toggle('tab-btn--active', active);
-    btn.setAttribute('aria-selected', String(active));
-  });
-
-  Object.entries(views).forEach(([key, el]) => {
-    if (key === name) {
-      el.removeAttribute('hidden');
-      el.classList.add('view--active');
-    } else {
-      el.setAttribute('hidden', '');
-      el.classList.remove('view--active');
-    }
-  });
-
-  if (name === 'stats') renderStatsView();
-  if (name === 'add')   renderAddView();
+function formatCurrency(amount) {
+  return '$' + amount.toFixed(2);
 }
 
-tabs.forEach(btn => {
-  btn.addEventListener('click', () => activateTab(btn.dataset.tab));
+function computePerPerson() {
+  if (state.people <= 0) return 0;
+  const total = state.bill * (1 + state.tipPercent / 100);
+  return total / state.people;
+}
+
+function render() {
+  peopleOutput.textContent = String(state.people);
+  perPersonOutput.textContent = formatCurrency(computePerPerson());
+}
+
+billInput.addEventListener('input', () => {
+  const value = parseFloat(billInput.value);
+  state.bill = Number.isFinite(value) && value > 0 ? value : 0;
+  render();
 });
 
-// ── Stats view ────────────────────────────────────────────────────────────
-function renderStatsView() {
-  renderStats(views.stats, {
-    onReset: () => resetGame(),
-    onMutate: () => resetGame(),
+tipButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    const tip = parseFloat(button.dataset.tip);
+    state.tipPercent = Number.isFinite(tip) ? tip : 0;
+    tipButtons.forEach((btn) => btn.classList.toggle('active', btn === button));
+    render();
   });
-}
+});
 
-// ── Add Question view ─────────────────────────────────────────────────────
-function renderAddView() {
-  renderAddQuestion(views.add, {
-    onSave: () => resetGame(),
-  });
-}
+decrementBtn.addEventListener('click', () => {
+  if (state.people > 1) {
+    state.people -= 1;
+    render();
+  }
+});
 
-// ── Boot ──────────────────────────────────────────────────────────────────
-seedSampleIfNeeded();
-initGame(views.game);
-activateTab('game');
+incrementBtn.addEventListener('click', () => {
+  state.people += 1;
+  render();
+});
+
+render();
