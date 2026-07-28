@@ -10,7 +10,7 @@ import {
   getStats,
   resetStats,
   deleteQuestion,
-  updateQuestion,
+  reviseQuestion,
 } from './storage.js';
 
 // ── Utility: escape HTML ──────────────────────────────────────────────────
@@ -97,7 +97,7 @@ function attachCustomCardListeners(container, onMutate) {
         const newA = formData.get('optionA').trim();
         const newB = formData.get('optionB').trim();
         if (!newA || !newB) return;
-        updateQuestion(id, newA, newB);
+        reviseQuestion(id, newA, newB);
         onMutate();
       });
     });

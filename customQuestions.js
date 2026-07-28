@@ -1,74 +1,59 @@
 /**
- * customQuestions.js — localStorage load/save for custom questions.
- *
- * Thin re-export facade over storage.js for the custom-questions
- * subset of functionality. Import from here when you only need
- * custom-question operations, without pulling in votes/stats.
+ * customQuestions.js — CRUD helpers for user-created questions.
  *
  * Exports:
- *   loadCustomQuestions()              → Question[]
+ *   loadCustomQuestions()               → Question[]
  *   saveCustomQuestion(optionA, optionB) → Question
- *   editCustomQuestion(id, optionA, optionB) → void
- *   removeCustomQuestion(id)            → void
- *   seedSampleIfNeeded()                → void  (call once on boot)
+ *   editCustomQuestion(id, a, b)         → void
+ *   removeCustomQuestion(id)             → void
+ *   seedSampleIfNeeded()                 → void
  */
 
 import {
   getQuestions,
   addQuestion,
-  updateQuestion,
+  reviseQuestion,
   deleteQuestion,
 } from './storage.js';
 
-const SEED_KEY = 'wyr_sample_seeded';
-
 /**
- * Return only the user-created (non-builtin) questions from localStorage.
- * @returns {Array<{id:string, optionA:string, optionB:string, builtin:false}>}
+ * Return only the custom (non-builtin) questions.
  */
 export function loadCustomQuestions() {
   return getQuestions().filter(q => !q.builtin);
 }
 
 /**
- * Persist a new custom question.
- * Both options are trimmed; callers must validate non-empty before calling.
- * @param {string} optionA
- * @param {string} optionB
- * @returns {{id:string, optionA:string, optionB:string, builtin:false}}
+ * Persist a new custom question and return it.
  */
 export function saveCustomQuestion(optionA, optionB) {
   return addQuestion(optionA, optionB);
 }
 
 /**
- * Update an existing custom question in place.
- * @param {string} id
- * @param {string} optionA
- * @param {string} optionB
+ * Edit an existing custom question by id.
+ * Delegates to reviseQuestion (renamed from updateQuestion — rename only).
  */
 export function editCustomQuestion(id, optionA, optionB) {
-  updateQuestion(id, optionA, optionB);
+  reviseQuestion(id, optionA, optionB);
 }
 
 /**
- * Remove a custom question by id.
- * @param {string} id
+ * Delete a custom question by id.
  */
 export function removeCustomQuestion(id) {
   deleteQuestion(id);
 }
 
 /**
- * Seed one sample custom question on the very first load of the app.
- * Idempotent — guarded by a localStorage flag so it only runs once.
- * Call this once during app boot (before initGame).
+ * Seed one sample custom question if no custom questions exist yet.
  */
 export function seedSampleIfNeeded() {
-  if (localStorage.getItem(SEED_KEY)) return;
-  addQuestion(
-    'Only be able to whisper for the rest of your life',
-    'Only be able to shout for the rest of your life'
-  );
-  localStorage.setItem(SEED_KEY, '1');
+  const existing = loadCustomQuestions();
+  if (existing.length === 0) {
+    addQuestion(
+      'Have the ability to time travel but only backwards',
+      'Have the ability to teleport but only to places you have already been'
+    );
+  }
 }
