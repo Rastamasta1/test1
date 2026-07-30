@@ -1,69 +1,42 @@
-/**
- * app.js — entry point for Would You Rather.
- *
- * Responsibilities:
- *  - Tab switching (Play / My Stats / Add Question)
- *  - Initialize game view via game.js
- *  - Render stats view via stats.js
- *  - Render add-question form via addQuestion.js
- */
+// app.js — UI controller
+// Imports storage, habitModel, and render; wires form submit, toggle clicks, initial render
 
-import { initGame, resetGame } from './game.js';
-import { addQuestion } from './storage.js';
-import { renderStats } from './stats.js';
-import { renderAddQuestion } from './addQuestion.js';
-import { seedSampleIfNeeded } from './customQuestions.js';
+import { loadHabits, saveHabits } from './storage.js';
+import { createHabit, toggleDay } from './habitModel.js';
+import { renderHabits } from './render.js';
 
-// ── DOM refs ──────────────────────────────────────────────────────────────
-const tabs = document.querySelectorAll('.tab-btn');
-const views = {
-  game:  document.getElementById('view-game'),
-  stats: document.getElementById('view-stats'),
-  add:   document.getElementById('view-add'),
-};
+const form = document.getElementById('add-habit-form');
+const input = document.getElementById('habit-name-input');
+const container = document.getElementById('habits-container');
 
-// ── Tab switching ─────────────────────────────────────────────────────────
-function activateTab(name) {
-  tabs.forEach(btn => {
-    const active = btn.dataset.tab === name;
-    btn.classList.toggle('tab-btn--active', active);
-    btn.setAttribute('aria-selected', String(active));
-  });
-
-  Object.entries(views).forEach(([key, el]) => {
-    if (key === name) {
-      el.removeAttribute('hidden');
-      el.classList.add('view--active');
-    } else {
-      el.setAttribute('hidden', '');
-      el.classList.remove('view--active');
-    }
-  });
-
-  if (name === 'stats') renderStatsView();
-  if (name === 'add')   renderAddView();
+function getHabits() {
+  return loadHabits();
 }
 
-tabs.forEach(btn => {
-  btn.addEventListener('click', () => activateTab(btn.dataset.tab));
+function refresh() {
+  const habits = getHabits();
+  renderHabits(container, habits, handleToggle);
+}
+
+function handleToggle(habitId, dateStr) {
+  const habits = getHabits();
+  const updated = habits.map(h =>
+    h.id === habitId ? toggleDay(h, dateStr) : h
+  );
+  saveHabits(updated);
+  refresh();
+}
+
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const name = input.value.trim();
+  if (!name) return;
+  const habits = getHabits();
+  const newHabit = createHabit(name);
+  saveHabits([...habits, newHabit]);
+  input.value = '';
+  refresh();
 });
 
-// ── Stats view ────────────────────────────────────────────────────────────
-function renderStatsView() {
-  renderStats(views.stats, {
-    onReset: () => resetGame(),
-    onMutate: () => resetGame(),
-  });
-}
-
-// ── Add Question view ─────────────────────────────────────────────────────
-function renderAddView() {
-  renderAddQuestion(views.add, {
-    onSave: () => resetGame(),
-  });
-}
-
-// ── Boot ──────────────────────────────────────────────────────────────────
-seedSampleIfNeeded();
-initGame(views.game);
-activateTab('game');
+// Initial render on page load
+refresh();
