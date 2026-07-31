@@ -3,92 +3,258 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Would You Rather?</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤔</text></svg>" />
-  <link href="styles.css" rel="stylesheet" />
+  <title>Unit Converter</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      color: #e0e0e0;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 1.5rem;
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      background: linear-gradient(90deg, #e94560, #0f3460, #53d8fb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #888;
+      margin-bottom: 2rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #aaa;
+      margin-bottom: 0.4rem;
+    }
+
+    .field {
+      margin-bottom: 1.25rem;
+    }
+
+    select, input[type="number"] {
+      width: 100%;
+      padding: 0.65rem 0.9rem;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 0.6rem;
+      color: #e0e0e0;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+    }
+
+    select:focus, input[type="number"]:focus {
+      border-color: #53d8fb;
+      box-shadow: 0 0 0 3px rgba(83, 216, 251, 0.15);
+    }
+
+    input[type="number"] {
+      cursor: text;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
+
+    .unit-type-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      background: rgba(255,255,255,0.05);
+      border-radius: 0.75rem;
+      padding: 0.3rem;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 0.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      background: transparent;
+      color: #aaa;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #e94560, #c23152);
+      color: #fff;
+    }
+
+    .tab-btn:hover:not(.active) {
+      background: rgba(255,255,255,0.08);
+      color: #e0e0e0;
+    }
+
+    .conversion-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 0.75rem;
+      align-items: end;
+      margin-bottom: 1.25rem;
+    }
+
+    .swap-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 50%;
+      width: 2.5rem;
+      height: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: #53d8fb;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      flex-shrink: 0;
+      margin-bottom: 2px;
+    }
+
+    .swap-btn:hover {
+      background: rgba(83, 216, 251, 0.15);
+      box-shadow: 0 0 0 3px rgba(83, 216, 251, 0.12);
+      transform: rotate(180deg);
+    }
+
+    .result-box {
+      background: rgba(83, 216, 251, 0.07);
+      border: 1px solid rgba(83, 216, 251, 0.25);
+      border-radius: 0.75rem;
+      padding: 1.25rem 1rem;
+      text-align: center;
+      min-height: 5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+    }
+
+    .result-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #53d8fb;
+      line-height: 1.1;
+      word-break: break-all;
+    }
+
+    .result-label {
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    .result-formula {
+      font-size: 0.78rem;
+      color: #666;
+      margin-top: 0.2rem;
+    }
+
+    .error-msg {
+      color: #e94560;
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 0.5rem;
+      min-height: 1.2rem;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.72rem;
+      color: #555;
+    }
+  </style>
 </head>
 <body>
+  <div class="card">
+    <h1>Unit Converter</h1>
+    <p class="subtitle">Metric &amp; Imperial &mdash; Length, Weight, Temperature</p>
 
-  <header class="app-header">
-    <div class="header-inner">
-      <span class="header-logo" aria-hidden="true">🤔</span>
-      <h1 class="header-title">Would You Rather?</h1>
+    <!-- Unit Type Tabs -->
+    <div class="unit-type-tabs" role="tablist" aria-label="Unit type">
+      <button class="tab-btn active" data-type="length" role="tab" aria-selected="true">Length</button>
+      <button class="tab-btn" data-type="weight" role="tab" aria-selected="false">Weight</button>
+      <button class="tab-btn" data-type="temperature" role="tab" aria-selected="false">Temperature</button>
     </div>
-  </header>
 
-  <nav class="tab-bar" role="tablist" aria-label="App sections">
-    <button
-      class="tab-btn tab-btn--active"
-      role="tab"
-      aria-selected="true"
-      aria-controls="view-game"
-      data-tab="game"
-      id="tab-game"
-    >
-      <span class="tab-icon" aria-hidden="true">🎮</span>
-      <span class="tab-label">Play</span>
-    </button>
-    <button
-      class="tab-btn"
-      role="tab"
-      aria-selected="false"
-      aria-controls="view-stats"
-      data-tab="stats"
-      id="tab-stats"
-    >
-      <span class="tab-icon" aria-hidden="true">📊</span>
-      <span class="tab-label">My Stats</span>
-    </button>
-    <button
-      class="tab-btn"
-      role="tab"
-      aria-selected="false"
-      aria-controls="view-add"
-      data-tab="add"
-      id="tab-add"
-    >
-      <span class="tab-icon" aria-hidden="true">✏️</span>
-      <span class="tab-label">Add Question</span>
-    </button>
-  </nav>
+    <!-- Input value -->
+    <div class="field">
+      <label for="input-value">Value</label>
+      <input
+        type="number"
+        id="input-value"
+        placeholder="Enter a number"
+        step="any"
+        autocomplete="off"
+      />
+    </div>
 
-  <main class="app-main">
+    <!-- From / Swap / To -->
+    <div class="conversion-row">
+      <div class="field" style="margin-bottom:0">
+        <label for="from-unit">From</label>
+        <select id="from-unit" aria-label="From unit"></select>
+      </div>
 
-    <!-- ── Game view ── -->
-    <section
-      id="view-game"
-      class="view view--active"
-      role="tabpanel"
-      aria-labelledby="tab-game"
-    >
-      <!-- Populated by app.js -->
-    </section>
+      <button class="swap-btn" id="swap-btn" title="Swap units" aria-label="Swap from and to units">
+        &#8646;
+      </button>
 
-    <!-- ── Stats view ── -->
-    <section
-      id="view-stats"
-      class="view"
-      role="tabpanel"
-      aria-labelledby="tab-stats"
-      hidden
-    >
-      <!-- Populated by app.js -->
-    </section>
+      <div class="field" style="margin-bottom:0">
+        <label for="to-unit">To</label>
+        <select id="to-unit" aria-label="To unit"></select>
+      </div>
+    </div>
 
-    <!-- ── Add-question view ── -->
-    <section
-      id="view-add"
-      class="view"
-      role="tabpanel"
-      aria-labelledby="tab-add"
-      hidden
-    >
-      <!-- Populated by app.js -->
-    </section>
+    <!-- Result -->
+    <div class="result-box" id="result-box" aria-live="polite" aria-atomic="true">
+      <div class="result-value" id="result-value">&mdash;</div>
+      <div class="result-label" id="result-label">Enter a value above</div>
+      <div class="result-formula" id="result-formula"></div>
+    </div>
 
-  </main>
+    <p class="error-msg" id="error-msg" role="alert"></p>
+
+    <footer>Last used pair is remembered in your browser.</footer>
+  </div>
 
   <script type="module" src="app.js"></script>
-
 </body>
 </html>
