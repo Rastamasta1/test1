@@ -1,94 +1,766 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Would You Rather?</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤔</text></svg>" />
-  <link href="styles.css" rel="stylesheet" />
+  <title>Cooking Measurement Converter</title>
+  <style>
+    /* ── Design tokens ── */
+    :root[data-theme="light"] {
+      --bg:           #fdf6ee;
+      --surface:      #ffffff;
+      --surface-alt:  #f4ece0;
+      --border:       #d9c9b0;
+      --text:         #2c1e0f;
+      --text-muted:   #7a6248;
+      --accent:       #c0541a;
+      --accent-hover: #9e4214;
+      --toggle-bg:    #d9c9b0;
+      --toggle-knob:  #ffffff;
+      --shadow:       0 4px 24px rgba(44,30,15,0.10);
+      --result-bg:    #fff4e8;
+      --result-border:#f0c080;
+    }
+
+    :root[data-theme="dark"] {
+      --bg:           #1a1209;
+      --surface:      #271a0d;
+      --surface-alt:  #32200f;
+      --border:       #4a3322;
+      --text:         #f2e4cc;
+      --text-muted:   #a0876a;
+      --accent:       #e8763a;
+      --accent-hover: #f5924e;
+      --toggle-bg:    #e8763a;
+      --toggle-knob:  #1a1209;
+      --shadow:       0 4px 24px rgba(0,0,0,0.45);
+      --result-bg:    #2a1a08;
+      --result-border:#5a3a18;
+    }
+
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem 4rem;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* ── Header ── */
+    header {
+      width: 100%;
+      max-width: 620px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2.5rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+
+    .logo-icon {
+      font-size: 1.75rem;
+      line-height: 1;
+    }
+
+    .logo-text {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--accent);
+    }
+
+    /* ── Dark/light toggle ── */
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      user-select: none;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-family: inherit;
+      padding: 0.3rem 0.5rem;
+      border-radius: 8px;
+      transition: color 0.2s;
+    }
+
+    .theme-toggle:hover { color: var(--text); }
+    .theme-toggle:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .toggle-track {
+      width: 44px;
+      height: 24px;
+      background: var(--toggle-bg);
+      border-radius: 12px;
+      position: relative;
+      transition: background 0.3s;
+      flex-shrink: 0;
+    }
+
+    .toggle-knob {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      background: var(--toggle-knob);
+      border-radius: 50%;
+      transition: transform 0.3s, background 0.3s;
+    }
+
+    [data-theme="dark"] .toggle-knob {
+      transform: translateX(20px);
+    }
+
+    /* ── Card ── */
+    .card {
+      width: 100%;
+      max-width: 620px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem 2rem 2.25rem;
+      box-shadow: var(--shadow);
+      transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+    }
+
+    .card-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+    }
+
+    /* ── Form grid ── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 480px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .card { padding: 1.5rem 1.25rem 1.75rem; }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .field label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    .field input,
+    .field select {
+      background: var(--surface-alt);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 1.05rem;
+      font-family: inherit;
+      padding: 0.65rem 0.85rem;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+      width: 100%;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+    }
+
+    .field input::placeholder { color: var(--text-muted); opacity: 0.6; }
+
+    /* Custom select arrow */
+    .select-wrap {
+      position: relative;
+    }
+
+    .select-wrap::after {
+      content: '';
+      position: absolute;
+      right: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 5px solid transparent;
+      border-top-color: var(--text-muted);
+      border-bottom: 0;
+      pointer-events: none;
+    }
+
+    /* ── Ingredient selector ── */
+    .ingredient-row {
+      margin-bottom: 1rem;
+    }
+
+    .ingredient-row .field { width: 100%; }
+
+    /* ── Swap button ── */
+    .swap-row {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .btn-swap {
+      background: var(--surface-alt);
+      border: 1.5px solid var(--border);
+      color: var(--accent);
+      font-size: 1.3rem;
+      cursor: pointer;
+      border-radius: 50%;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+      line-height: 1;
+    }
+
+    .btn-swap:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      transform: rotate(180deg);
+    }
+
+    .btn-swap:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* ── Convert button ── */
+    .btn-convert {
+      display: block;
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: background 0.2s, transform 0.1s;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-convert:hover  { background: var(--accent-hover); }
+    .btn-convert:active { transform: scale(0.98); }
+    .btn-convert:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    /* ── Result box ── */
+    .result-box {
+      background: var(--result-bg);
+      border: 1.5px solid var(--result-border);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      text-align: center;
+      transition: background 0.3s, border-color 0.3s;
+      min-height: 84px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+    }
+
+    .result-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+    }
+
+    .result-value {
+      font-size: 2.1rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.1;
+    }
+
+    .result-unit {
+      font-size: 1rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .result-empty {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    .result-error {
+      font-size: 0.95rem;
+      color: #e05555;
+      font-weight: 600;
+    }
+
+    /* ── Reference table ── */
+    .ref-section {
+      width: 100%;
+      max-width: 620px;
+      margin-top: 2rem;
+    }
+
+    .ref-section h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.85rem;
+    }
+
+    .ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .ref-table th {
+      background: var(--surface-alt);
+      padding: 0.6rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ref-table td {
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .ref-table tr:last-child td { border-bottom: none; }
+
+    .ref-table tbody tr:hover td {
+      background: var(--surface-alt);
+    }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 2.5rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+      opacity: 0.7;
+    }
+  </style>
 </head>
 <body>
 
-  <header class="app-header">
-    <div class="header-inner">
-      <span class="header-logo" aria-hidden="true">🤔</span>
-      <h1 class="header-title">Would You Rather?</h1>
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <span class="logo-icon" aria-hidden="true">🥄</span>
+      <span class="logo-text">MeasureUp</span>
     </div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
+      <span class="toggle-track" aria-hidden="true">
+        <span class="toggle-knob"></span>
+      </span>
+      <span id="themeLabel">Dark mode</span>
+    </button>
   </header>
 
-  <nav class="tab-bar" role="tablist" aria-label="App sections">
-    <button
-      class="tab-btn tab-btn--active"
-      role="tab"
-      aria-selected="true"
-      aria-controls="view-game"
-      data-tab="game"
-      id="tab-game"
-    >
-      <span class="tab-icon" aria-hidden="true">🎮</span>
-      <span class="tab-label">Play</span>
-    </button>
-    <button
-      class="tab-btn"
-      role="tab"
-      aria-selected="false"
-      aria-controls="view-stats"
-      data-tab="stats"
-      id="tab-stats"
-    >
-      <span class="tab-icon" aria-hidden="true">📊</span>
-      <span class="tab-label">My Stats</span>
-    </button>
-    <button
-      class="tab-btn"
-      role="tab"
-      aria-selected="false"
-      aria-controls="view-add"
-      data-tab="add"
-      id="tab-add"
-    >
-      <span class="tab-icon" aria-hidden="true">✏️</span>
-      <span class="tab-label">Add Question</span>
-    </button>
-  </nav>
+  <!-- Converter card -->
+  <main>
+    <div class="card" role="main">
+      <h1 class="card-title">Measurement Converter</h1>
+      <p class="card-subtitle">Convert between cups, grams, millilitres, and tablespoons</p>
 
-  <main class="app-main">
+      <!-- Ingredient selector -->
+      <div class="ingredient-row">
+        <div class="field">
+          <label for="ingredient">Ingredient <span style="font-weight:400;text-transform:none;font-size:0.78rem;">(affects cup/tbsp ↔ g conversion)</span></label>
+          <div class="select-wrap">
+            <select id="ingredient" aria-label="Select ingredient">
+              <option value="water">Water</option>
+              <option value="flour_ap">Flour (all-purpose)</option>
+              <option value="flour_bread">Flour (bread)</option>
+              <option value="flour_cake">Flour (cake)</option>
+              <option value="sugar_white">Sugar (white, granulated)</option>
+              <option value="sugar_brown">Sugar (brown, packed)</option>
+              <option value="sugar_powder">Sugar (powdered / icing)</option>
+              <option value="butter">Butter</option>
+              <option value="milk">Milk (whole)</option>
+              <option value="honey">Honey</option>
+              <option value="salt">Salt (table)</option>
+              <option value="rice_raw">Rice (raw, long-grain)</option>
+              <option value="oats">Oats (rolled)</option>
+              <option value="cocoa">Cocoa powder</option>
+              <option value="oil_veg">Oil (vegetable)</option>
+            </select>
+          </div>
+        </div>
+      </div>
 
-    <!-- ── Game view ── -->
-    <section
-      id="view-game"
-      class="view view--active"
-      role="tabpanel"
-      aria-labelledby="tab-game"
-    >
-      <!-- Populated by app.js -->
+      <!-- From / To row -->
+      <div class="form-grid">
+        <div class="field">
+          <label for="fromValue">Amount</label>
+          <input
+            type="number"
+            id="fromValue"
+            placeholder="e.g. 2.5"
+            min="0"
+            step="any"
+            aria-label="Amount to convert"
+          />
+        </div>
+        <div class="field">
+          <label for="fromUnit">From unit</label>
+          <div class="select-wrap">
+            <select id="fromUnit" aria-label="Convert from unit">
+              <option value="cup">Cup (US)</option>
+              <option value="tbsp">Tablespoon (US)</option>
+              <option value="tsp">Teaspoon (US)</option>
+              <option value="ml">Millilitre (ml)</option>
+              <option value="l">Litre (l)</option>
+              <option value="g">Gram (g)</option>
+              <option value="oz">Ounce (oz)</option>
+              <option value="lb">Pound (lb)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Swap button -->
+      <div class="swap-row">
+        <button class="btn-swap" id="swapBtn" title="Swap units" aria-label="Swap from and to units">&#8645;</button>
+      </div>
+
+      <div class="form-grid" style="margin-bottom:1.5rem;">
+        <div class="field">
+          <label for="toValue">Result</label>
+          <input
+            type="number"
+            id="toValue"
+            placeholder="—"
+            readonly
+            aria-label="Converted result"
+            style="cursor:default;"
+          />
+        </div>
+        <div class="field">
+          <label for="toUnit">To unit</label>
+          <div class="select-wrap">
+            <select id="toUnit" aria-label="Convert to unit">
+              <option value="cup">Cup (US)</option>
+              <option value="tbsp">Tablespoon (US)</option>
+              <option value="tsp">Teaspoon (US)</option>
+              <option value="ml" selected>Millilitre (ml)</option>
+              <option value="l">Litre (l)</option>
+              <option value="g">Gram (g)</option>
+              <option value="oz">Ounce (oz)</option>
+              <option value="lb">Pound (lb)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Convert button -->
+      <button class="btn-convert" id="convertBtn">Convert</button>
+
+      <!-- Result display -->
+      <div class="result-box" id="resultBox" aria-live="polite" aria-atomic="true">
+        <span class="result-empty">Enter an amount and press Convert</span>
+      </div>
+    </div>
+
+    <!-- Reference table -->
+    <section class="ref-section" aria-label="Common volume equivalents">
+      <h2>Common Volume Equivalents</h2>
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th>Measure</th>
+            <th>Cups (US)</th>
+            <th>Tablespoons</th>
+            <th>Millilitres</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1 cup</td><td>1</td><td>16</td><td>236.6</td></tr>
+          <tr><td>¾ cup</td><td>0.75</td><td>12</td><td>177.4</td></tr>
+          <tr><td>⅔ cup</td><td>0.667</td><td>10.67</td><td>157.7</td></tr>
+          <tr><td>½ cup</td><td>0.5</td><td>8</td><td>118.3</td></tr>
+          <tr><td>⅓ cup</td><td>0.333</td><td>5.33</td><td>78.9</td></tr>
+          <tr><td>¼ cup</td><td>0.25</td><td>4</td><td>59.1</td></tr>
+          <tr><td>1 tablespoon</td><td>0.0625</td><td>1</td><td>14.79</td></tr>
+          <tr><td>1 teaspoon</td><td>0.0208</td><td>0.333</td><td>4.93</td></tr>
+        </tbody>
+      </table>
     </section>
-
-    <!-- ── Stats view ── -->
-    <section
-      id="view-stats"
-      class="view"
-      role="tabpanel"
-      aria-labelledby="tab-stats"
-      hidden
-    >
-      <!-- Populated by app.js -->
-    </section>
-
-    <!-- ── Add-question view ── -->
-    <section
-      id="view-add"
-      class="view"
-      role="tabpanel"
-      aria-labelledby="tab-add"
-      hidden
-    >
-      <!-- Populated by app.js -->
-    </section>
-
   </main>
 
-  <script type="module" src="app.js"></script>
+  <footer>
+    <p>Based on US customary measurements &bull; Gram conversions are ingredient-specific</p>
+  </footer>
 
+  <script>
+    /* ─────────────────────────────────────────────
+       CONVERSION LOGIC
+       All conversions go through millilitres (ml)
+       as the single intermediate unit for volume,
+       and grams for mass — bridged via density.
+    ───────────────────────────────────────────── */
+
+    // Volume conversions: unit → ml
+    const TO_ML = {
+      cup:  236.588,
+      tbsp: 14.7868,
+      tsp:  4.92892,
+      ml:   1,
+      l:    1000,
+    };
+
+    // Mass conversions: unit → grams
+    const TO_G = {
+      g:  1,
+      oz: 28.3495,
+      lb: 453.592,
+    };
+
+    // Ingredient densities (g per ml)
+    const DENSITY = {
+      water:        1.000,
+      flour_ap:     0.529,
+      flour_bread:  0.545,
+      flour_cake:   0.444,
+      sugar_white:  0.845,
+      sugar_brown:  0.930,
+      sugar_powder: 0.560,
+      butter:       0.911,
+      milk:         1.030,
+      honey:        1.420,
+      salt:         1.217,
+      rice_raw:     0.780,
+      oats:         0.340,
+      cocoa:        0.520,
+      oil_veg:      0.910,
+    };
+
+    // Unit category helpers
+    function isVolume(u) { return u in TO_ML; }
+    function isMass(u)   { return u in TO_G;  }
+
+    // Convert fromValue in fromUnit → toUnit, given an ingredient
+    function convert(value, fromUnit, toUnit, ingredient) {
+      if (fromUnit === toUnit) return value;
+
+      const density = DENSITY[ingredient] || 1;
+
+      // volume → volume
+      if (isVolume(fromUnit) && isVolume(toUnit)) {
+        const ml = value * TO_ML[fromUnit];
+        return ml / TO_ML[toUnit];
+      }
+
+      // mass → mass
+      if (isMass(fromUnit) && isMass(toUnit)) {
+        const g = value * TO_G[fromUnit];
+        return g / TO_G[toUnit];
+      }
+
+      // volume → mass
+      if (isVolume(fromUnit) && isMass(toUnit)) {
+        const ml = value * TO_ML[fromUnit];
+        const g  = ml * density;               // ml × g/ml = g
+        return g / TO_G[toUnit];
+      }
+
+      // mass → volume
+      if (isMass(fromUnit) && isVolume(toUnit)) {
+        const g  = value * TO_G[fromUnit];
+        const ml = g / density;               // g / (g/ml) = ml
+        return ml / TO_ML[toUnit];
+      }
+
+      return null; // should never reach
+    }
+
+    function unitLabel(unit) {
+      const labels = {
+        cup: 'cups (US)', tbsp: 'tbsp', tsp: 'tsp',
+        ml: 'ml', l: 'litres', g: 'grams', oz: 'oz', lb: 'lb'
+      };
+      return labels[unit] || unit;
+    }
+
+    function formatResult(n) {
+      if (n === null || isNaN(n)) return null;
+      // Show up to 4 significant figures, remove trailing zeros
+      if (Math.abs(n) >= 1000)  return n.toFixed(1);
+      if (Math.abs(n) >= 100)   return n.toFixed(2);
+      if (Math.abs(n) >= 10)    return n.toFixed(3);
+      if (Math.abs(n) >= 1)     return n.toFixed(4);
+      return n.toPrecision(4);
+    }
+
+    /* ─────────────────────────────────────────────
+       DOM REFERENCES
+    ───────────────────────────────────────────── */
+    const fromValueEl  = document.getElementById('fromValue');
+    const fromUnitEl   = document.getElementById('fromUnit');
+    const toValueEl    = document.getElementById('toValue');
+    const toUnitEl     = document.getElementById('toUnit');
+    const ingredientEl = document.getElementById('ingredient');
+    const convertBtn   = document.getElementById('convertBtn');
+    const swapBtn      = document.getElementById('swapBtn');
+    const resultBox    = document.getElementById('resultBox');
+    const themeToggle  = document.getElementById('themeToggle');
+    const themeLabel   = document.getElementById('themeLabel');
+
+    /* ─────────────────────────────────────────────
+       CONVERT ACTION
+    ───────────────────────────────────────────── */
+    function doConvert() {
+      const raw = fromValueEl.value.trim();
+      if (raw === '' || raw === null) {
+        setResult('empty');
+        return;
+      }
+      const value = parseFloat(raw);
+      if (isNaN(value)) {
+        setResult('error', 'Please enter a valid number.');
+        return;
+      }
+      if (value < 0) {
+        setResult('error', 'Amount must be zero or greater.');
+        return;
+      }
+
+      const fromUnit   = fromUnitEl.value;
+      const toUnit     = toUnitEl.value;
+      const ingredient = ingredientEl.value;
+
+      const result = convert(value, fromUnit, toUnit, ingredient);
+
+      if (result === null) {
+        setResult('error', 'Cannot convert between these units.');
+        return;
+      }
+
+      const formatted = formatResult(result);
+      toValueEl.value = formatted;
+      setResult('value', formatted, toUnit, value, fromUnit);
+    }
+
+    function setResult(type, val, unit, origVal, origUnit) {
+      if (type === 'empty') {
+        resultBox.innerHTML = '<span class="result-empty">Enter an amount and press Convert</span>';
+      } else if (type === 'error') {
+        resultBox.innerHTML = `<span class="result-error">${val}</span>`;
+      } else {
+        resultBox.innerHTML =
+          `<span class="result-label">${origVal} ${unitLabel(origUnit)} equals</span>` +
+          `<span class="result-value">${val}</span>` +
+          `<span class="result-unit">${unitLabel(unit)}</span>`;
+      }
+    }
+
+    convertBtn.addEventListener('click', doConvert);
+
+    // Also convert on Enter key in the amount field
+    fromValueEl.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') doConvert();
+    });
+
+    // Live update when units or ingredient change (if a value is present)
+    [fromUnitEl, toUnitEl, ingredientEl].forEach(function(el) {
+      el.addEventListener('change', function() {
+        if (fromValueEl.value.trim() !== '') doConvert();
+      });
+    });
+
+    /* ─────────────────────────────────────────────
+       SWAP BUTTON
+    ───────────────────────────────────────────── */
+    swapBtn.addEventListener('click', function() {
+      var tmp = fromUnitEl.value;
+      fromUnitEl.value = toUnitEl.value;
+      toUnitEl.value   = tmp;
+
+      // If there's a result in toValue, move it to fromValue
+      if (toValueEl.value && toValueEl.value !== '') {
+        fromValueEl.value = toValueEl.value;
+      }
+
+      if (fromValueEl.value.trim() !== '') doConvert();
+    });
+
+    /* ─────────────────────────────────────────────
+       THEME TOGGLE
+    ───────────────────────────────────────────── */
+    themeToggle.addEventListener('click', function() {
+      var html  = document.documentElement;
+      var isDark = html.getAttribute('data-theme') === 'dark';
+      html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      themeLabel.textContent = isDark ? 'Dark mode' : 'Light mode';
+      try { localStorage.setItem('theme', isDark ? 'light' : 'dark'); } catch(e) {}
+    });
+
+    // Restore saved preference
+    (function() {
+      try {
+        var saved = localStorage.getItem('theme');
+        if (saved === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          themeLabel.textContent = 'Light mode';
+        }
+      } catch(e) {}
+    })();
+  </script>
 </body>
 </html>
