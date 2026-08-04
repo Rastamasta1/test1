@@ -3,92 +3,301 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Would You Rather?</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤔</text></svg>" />
-  <link href="styles.css" rel="stylesheet" />
+  <title>Pomodoro Timer</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #1a1a2e;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #eee;
+    }
+
+    .container {
+      text-align: center;
+      padding: 3rem 4rem;
+      background: #16213e;
+      border-radius: 2rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      min-width: 340px;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      color: #a8a8c0;
+    }
+
+    #mode-label {
+      font-size: 1rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+      font-weight: 600;
+      transition: color 0.4s;
+    }
+
+    #mode-label.work {
+      color: #e94560;
+    }
+
+    #mode-label.break {
+      color: #0f9b8e;
+    }
+
+    #timer-display {
+      font-size: 6rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+      font-variant-numeric: tabular-nums;
+      transition: color 0.4s;
+    }
+
+    #timer-display.work {
+      color: #e94560;
+    }
+
+    #timer-display.break {
+      color: #0f9b8e;
+    }
+
+    #progress-bar-wrap {
+      width: 100%;
+      height: 6px;
+      background: #0f3460;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 2.5rem;
+    }
+
+    #progress-bar {
+      height: 100%;
+      width: 100%;
+      border-radius: 3px;
+      transition: width 0.9s linear, background 0.4s;
+    }
+
+    #progress-bar.work {
+      background: #e94560;
+    }
+
+    #progress-bar.break {
+      background: #0f9b8e;
+    }
+
+    .controls {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    button {
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: transform 0.1s, opacity 0.15s, background 0.3s;
+      outline: none;
+    }
+
+    button:active {
+      transform: scale(0.96);
+    }
+
+    #btn-start {
+      background: #e94560;
+      color: #fff;
+      min-width: 110px;
+    }
+
+    #btn-start.break-mode {
+      background: #0f9b8e;
+    }
+
+    #btn-start:hover {
+      opacity: 0.88;
+    }
+
+    #btn-reset {
+      background: #0f3460;
+      color: #a8a8c0;
+    }
+
+    #btn-reset:hover {
+      background: #1a4a8a;
+      color: #eee;
+    }
+
+    .session-info {
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      color: #555a7c;
+      letter-spacing: 0.05em;
+    }
+
+    .session-info span {
+      color: #888ab0;
+      font-weight: 600;
+    }
+  </style>
 </head>
 <body>
-
-  <header class="app-header">
-    <div class="header-inner">
-      <span class="header-logo" aria-hidden="true">🤔</span>
-      <h1 class="header-title">Would You Rather?</h1>
+  <div class="container">
+    <h1>Pomodoro Timer</h1>
+    <div id="mode-label" class="work">Work</div>
+    <div id="timer-display" class="work">25:00</div>
+    <div id="progress-bar-wrap">
+      <div id="progress-bar" class="work"></div>
     </div>
-  </header>
+    <div class="controls">
+      <button id="btn-start">Start</button>
+      <button id="btn-reset">Reset</button>
+    </div>
+    <div class="session-info">
+      Sessions completed: <span id="session-count">0</span>
+    </div>
+  </div>
 
-  <nav class="tab-bar" role="tablist" aria-label="App sections">
-    <button
-      class="tab-btn tab-btn--active"
-      role="tab"
-      aria-selected="true"
-      aria-controls="view-game"
-      data-tab="game"
-      id="tab-game"
-    >
-      <span class="tab-icon" aria-hidden="true">🎮</span>
-      <span class="tab-label">Play</span>
-    </button>
-    <button
-      class="tab-btn"
-      role="tab"
-      aria-selected="false"
-      aria-controls="view-stats"
-      data-tab="stats"
-      id="tab-stats"
-    >
-      <span class="tab-icon" aria-hidden="true">📊</span>
-      <span class="tab-label">My Stats</span>
-    </button>
-    <button
-      class="tab-btn"
-      role="tab"
-      aria-selected="false"
-      aria-controls="view-add"
-      data-tab="add"
-      id="tab-add"
-    >
-      <span class="tab-icon" aria-hidden="true">✏️</span>
-      <span class="tab-label">Add Question</span>
-    </button>
-  </nav>
+  <script>
+    // --- Configuration ---
+    const WORK_DURATION  = 25 * 60; // seconds
+    const BREAK_DURATION =  5 * 60; // seconds
 
-  <main class="app-main">
+    // --- State ---
+    let mode          = 'work';   // 'work' | 'break'
+    let totalSeconds  = WORK_DURATION;
+    let remaining     = WORK_DURATION;
+    let running       = false;
+    let intervalId    = null;
+    let sessions      = 0;
 
-    <!-- ── Game view ── -->
-    <section
-      id="view-game"
-      class="view view--active"
-      role="tabpanel"
-      aria-labelledby="tab-game"
-    >
-      <!-- Populated by app.js -->
-    </section>
+    // --- DOM refs ---
+    const displayEl   = document.getElementById('timer-display');
+    const modeLabel   = document.getElementById('mode-label');
+    const progressBar = document.getElementById('progress-bar');
+    const btnStart    = document.getElementById('btn-start');
+    const btnReset    = document.getElementById('btn-reset');
+    const sessionCount= document.getElementById('session-count');
 
-    <!-- ── Stats view ── -->
-    <section
-      id="view-stats"
-      class="view"
-      role="tabpanel"
-      aria-labelledby="tab-stats"
-      hidden
-    >
-      <!-- Populated by app.js -->
-    </section>
+    // --- Helpers ---
+    function pad(n) {
+      return String(n).padStart(2, '0');
+    }
 
-    <!-- ── Add-question view ── -->
-    <section
-      id="view-add"
-      class="view"
-      role="tabpanel"
-      aria-labelledby="tab-add"
-      hidden
-    >
-      <!-- Populated by app.js -->
-    </section>
+    function formatTime(secs) {
+      const m = Math.floor(secs / 60);
+      const s = secs % 60;
+      return pad(m) + ':' + pad(s);
+    }
 
-  </main>
+    function updateDisplay() {
+      displayEl.textContent = formatTime(remaining);
 
-  <script type="module" src="app.js"></script>
+      const pct = remaining / totalSeconds * 100;
+      progressBar.style.width = pct + '%';
+    }
 
+    function applyMode() {
+      // Remove both classes, add current
+      [displayEl, modeLabel, progressBar].forEach(function(el) {
+        el.classList.remove('work', 'break');
+        el.classList.add(mode);
+      });
+      if (mode === 'break') {
+        btnStart.classList.add('break-mode');
+        modeLabel.textContent = 'Break';
+      } else {
+        btnStart.classList.remove('break-mode');
+        modeLabel.textContent = 'Work';
+      }
+    }
+
+    function switchMode() {
+      if (mode === 'work') {
+        sessions += 1;
+        sessionCount.textContent = sessions;
+        mode = 'break';
+        totalSeconds = BREAK_DURATION;
+      } else {
+        mode = 'work';
+        totalSeconds = WORK_DURATION;
+      }
+      remaining = totalSeconds;
+      applyMode();
+      updateDisplay();
+      // Auto-start the next phase
+      startTimer();
+    }
+
+    function tick() {
+      if (remaining <= 0) {
+        clearInterval(intervalId);
+        intervalId = null;
+        running = false;
+        btnStart.textContent = 'Start';
+        switchMode();
+        return;
+      }
+      remaining -= 1;
+      updateDisplay();
+    }
+
+    function startTimer() {
+      if (running) return;
+      running = true;
+      btnStart.textContent = 'Pause';
+      intervalId = setInterval(tick, 1000);
+    }
+
+    function pauseTimer() {
+      if (!running) return;
+      running = false;
+      clearInterval(intervalId);
+      intervalId = null;
+      btnStart.textContent = 'Resume';
+    }
+
+    function resetTimer() {
+      clearInterval(intervalId);
+      intervalId = null;
+      running = false;
+      mode = 'work';
+      totalSeconds = WORK_DURATION;
+      remaining = WORK_DURATION;
+      btnStart.textContent = 'Start';
+      applyMode();
+      updateDisplay();
+    }
+
+    // --- Event listeners ---
+    btnStart.addEventListener('click', function() {
+      if (running) {
+        pauseTimer();
+      } else {
+        startTimer();
+      }
+    });
+
+    btnReset.addEventListener('click', resetTimer);
+
+    // --- Init ---
+    applyMode();
+    updateDisplay();
+  </script>
 </body>
 </html>
