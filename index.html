@@ -3,92 +3,199 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Would You Rather?</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤔</text></svg>" />
-  <link href="styles.css" rel="stylesheet" />
+  <title>Countdown Timer</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      color: #fff;
+      padding: 1rem;
+    }
+
+    h1 {
+      font-size: clamp(1.2rem, 4vw, 2rem);
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      opacity: 0.85;
+    }
+
+    #target-label {
+      font-size: clamp(0.85rem, 2.5vw, 1.1rem);
+      opacity: 0.55;
+      margin-bottom: 3rem;
+      letter-spacing: 0.08em;
+    }
+
+    #countdown {
+      display: flex;
+      gap: clamp(1rem, 4vw, 2.5rem);
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .unit__value {
+      font-size: clamp(3rem, 12vw, 7rem);
+      font-weight: 700;
+      line-height: 1;
+      min-width: 2ch;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 0.5rem;
+      padding: 0.4em 0.6em;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+      transition: transform 0.1s ease;
+    }
+
+    .unit__label {
+      font-size: clamp(0.65rem, 2vw, 0.85rem);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.6;
+    }
+
+    #expired-msg {
+      display: none;
+      font-size: clamp(1.2rem, 4vw, 2rem);
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      opacity: 0.85;
+      text-align: center;
+      padding: 1.5rem 2rem;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 0.75rem;
+    }
+
+    #expired-msg.visible {
+      display: block;
+    }
+
+    #countdown.hidden {
+      display: none;
+    }
+  </style>
 </head>
 <body>
+  <h1>Countdown</h1>
+  <p id="target-label"></p>
 
-  <header class="app-header">
-    <div class="header-inner">
-      <span class="header-logo" aria-hidden="true">🤔</span>
-      <h1 class="header-title">Would You Rather?</h1>
+  <div id="countdown">
+    <div class="unit">
+      <span class="unit__value" id="val-days">00</span>
+      <span class="unit__label">Days</span>
     </div>
-  </header>
+    <div class="unit">
+      <span class="unit__value" id="val-hours">00</span>
+      <span class="unit__label">Hours</span>
+    </div>
+    <div class="unit">
+      <span class="unit__value" id="val-minutes">00</span>
+      <span class="unit__label">Minutes</span>
+    </div>
+    <div class="unit">
+      <span class="unit__value" id="val-seconds">00</span>
+      <span class="unit__label">Seconds</span>
+    </div>
+  </div>
 
-  <nav class="tab-bar" role="tablist" aria-label="App sections">
-    <button
-      class="tab-btn tab-btn--active"
-      role="tab"
-      aria-selected="true"
-      aria-controls="view-game"
-      data-tab="game"
-      id="tab-game"
-    >
-      <span class="tab-icon" aria-hidden="true">🎮</span>
-      <span class="tab-label">Play</span>
-    </button>
-    <button
-      class="tab-btn"
-      role="tab"
-      aria-selected="false"
-      aria-controls="view-stats"
-      data-tab="stats"
-      id="tab-stats"
-    >
-      <span class="tab-icon" aria-hidden="true">📊</span>
-      <span class="tab-label">My Stats</span>
-    </button>
-    <button
-      class="tab-btn"
-      role="tab"
-      aria-selected="false"
-      aria-controls="view-add"
-      data-tab="add"
-      id="tab-add"
-    >
-      <span class="tab-icon" aria-hidden="true">✏️</span>
-      <span class="tab-label">Add Question</span>
-    </button>
-  </nav>
+  <p id="expired-msg">&#x23F1; The date has already passed.</p>
 
-  <main class="app-main">
+  <script>
+    (function () {
+      'use strict';
 
-    <!-- ── Game view ── -->
-    <section
-      id="view-game"
-      class="view view--active"
-      role="tabpanel"
-      aria-labelledby="tab-game"
-    >
-      <!-- Populated by app.js -->
-    </section>
+      function getTargetDate() {
+        var hash = window.location.hash.replace('#', '').trim();
+        if (hash) {
+          var parsed = new Date(hash);
+          if (!isNaN(parsed.getTime())) {
+            return parsed;
+          }
+        }
+        // Default: next New Year
+        var now = new Date();
+        return new Date(now.getFullYear() + 1, 0, 1);
+      }
 
-    <!-- ── Stats view ── -->
-    <section
-      id="view-stats"
-      class="view"
-      role="tabpanel"
-      aria-labelledby="tab-stats"
-      hidden
-    >
-      <!-- Populated by app.js -->
-    </section>
+      function pad(n) {
+        return String(Math.floor(n)).padStart(2, '0');
+      }
 
-    <!-- ── Add-question view ── -->
-    <section
-      id="view-add"
-      class="view"
-      role="tabpanel"
-      aria-labelledby="tab-add"
-      hidden
-    >
-      <!-- Populated by app.js -->
-    </section>
+      function formatLabel(date) {
+        return date.toLocaleDateString(undefined, {
+          year: 'numeric', month: 'long', day: 'numeric'
+        });
+      }
 
-  </main>
+      var target = getTargetDate();
 
-  <script type="module" src="app.js"></script>
+      var labelEl     = document.getElementById('target-label');
+      var countdownEl = document.getElementById('countdown');
+      var expiredEl   = document.getElementById('expired-msg');
+      var daysEl      = document.getElementById('val-days');
+      var hoursEl     = document.getElementById('val-hours');
+      var minutesEl   = document.getElementById('val-minutes');
+      var secondsEl   = document.getElementById('val-seconds');
 
+      labelEl.textContent = formatLabel(target);
+
+      function tick() {
+        var now  = new Date();
+        var diff = target.getTime() - now.getTime();
+
+        if (diff <= 0) {
+          countdownEl.classList.add('hidden');
+          expiredEl.classList.add('visible');
+          return;
+        }
+
+        var totalSeconds = Math.floor(diff / 1000);
+        var seconds      = totalSeconds % 60;
+        var totalMinutes = Math.floor(totalSeconds / 60);
+        var minutes      = totalMinutes % 60;
+        var totalHours   = Math.floor(totalMinutes / 60);
+        var hours        = totalHours % 24;
+        var days         = Math.floor(totalHours / 24);
+
+        daysEl.textContent    = pad(days);
+        hoursEl.textContent   = pad(hours);
+        minutesEl.textContent = pad(minutes);
+        secondsEl.textContent = pad(seconds);
+      }
+
+      tick();
+      setInterval(tick, 1000);
+
+      window.addEventListener('hashchange', function () {
+        target = getTargetDate();
+        labelEl.textContent = formatLabel(target);
+        countdownEl.classList.remove('hidden');
+        expiredEl.classList.remove('visible');
+        tick();
+      });
+    })();
+  </script>
 </body>
 </html>
