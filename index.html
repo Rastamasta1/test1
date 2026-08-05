@@ -3,28 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Text Comparator</title>
+  <title>Text Comparison</title>
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
   <main class="container">
-    <h1>Text Comparator</h1>
-
+    <h1>Text Comparison</h1>
     <div class="inputs">
-      <div class="field">
+      <div class="input-group">
         <label for="text-a">Text A</label>
-        <textarea id="text-a" name="text-a" placeholder="Paste or type first text here…" rows="10"></textarea>
+        <textarea id="text-a" name="text-a" rows="10" placeholder="Enter first text here..."></textarea>
       </div>
-
-      <div class="field">
+      <div class="input-group">
         <label for="text-b">Text B</label>
-        <textarea id="text-b" name="text-b" placeholder="Paste or type second text here…" rows="10"></textarea>
+        <textarea id="text-b" name="text-b" rows="10" placeholder="Enter second text here..."></textarea>
       </div>
     </div>
-
-    <section class="result" id="result" aria-label="Result" aria-live="polite">
-      <!-- result will appear here -->
-    </section>
+    <div id="result" class="result" aria-live="polite"></div>
   </main>
 </body>
 </html>
