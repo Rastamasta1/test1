@@ -1,0 +1,146 @@
+[
+  {
+    "id": "rec-001",
+    "name": "Kind of Blue",
+    "description": "Miles Davis's landmark 1959 modal jazz album, widely considered the best-selling jazz record of all time.",
+    "category": "Jazz"
+  },
+  {
+    "id": "rec-002",
+    "name": "Rumours",
+    "description": "Fleetwood Mac's 1977 soft rock masterpiece recorded amid personal turmoil within the band.",
+    "category": "Rock"
+  },
+  {
+    "id": "rec-003",
+    "name": "Thriller",
+    "description": "Michael Jackson's 1982 pop and R&B album, the best-selling album of all time with iconic tracks and music videos.",
+    "category": "Pop"
+  },
+  {
+    "id": "rec-004",
+    "name": "Purple Rain",
+    "description": "Prince's 1984 soundtrack album blending funk, rock and R&B, accompanying his semi-autobiographical film.",
+    "category": "Funk"
+  },
+  {
+    "id": "rec-005",
+    "name": "Blue",
+    "description": "Joni Mitchell's intimate 1971 singer-songwriter album exploring love, loss and wanderlust.",
+    "category": "Folk"
+  },
+  {
+    "id": "rec-006",
+    "name": "The Dark Side of the Moon",
+    "description": "Pink Floyd's 1973 progressive rock concept album exploring themes of conflict, greed, time and mental illness.",
+    "category": "Progressive Rock"
+  },
+  {
+    "id": "rec-007",
+    "name": "What's Going On",
+    "description": "Marvin Gaye's socially conscious 1971 soul album addressing war, poverty and environmental concerns.",
+    "category": "Soul"
+  },
+  {
+    "id": "rec-008",
+    "name": "Nevermind",
+    "description": "Nirvana's 1991 grunge breakthrough that brought alternative rock to mainstream audiences worldwide.",
+    "category": "Grunge"
+  },
+  {
+    "id": "rec-009",
+    "name": "Ready to Die",
+    "description": "The Notorious B.I.G.'s 1994 debut album cementing East Coast hip-hop's dominance with vivid street narratives.",
+    "category": "Hip-Hop"
+  },
+  {
+    "id": "rec-010",
+    "name": "Appetite for Destruction",
+    "description": "Guns N' Roses' explosive 1987 debut, one of the best-selling hard rock albums ever recorded.",
+    "category": "Hard Rock"
+  },
+  {
+    "id": "rec-011",
+    "name": "Born to Run",
+    "description": "Bruce Springsteen's 1975 rock epic depicting youth, escape and the American dream on the streets of New Jersey.",
+    "category": "Rock"
+  },
+  {
+    "id": "rec-012",
+    "name": "Songs in the Key of Life",
+    "description": "Stevie Wonder's sprawling 1976 double album celebrating life in a rich blend of soul, funk and pop.",
+    "category": "Soul"
+  },
+  {
+    "id": "rec-013",
+    "name": "Horses",
+    "description": "Patti Smith's raw 1975 debut merging punk poetry with rock, opening with a provocative reinterpretation of Gloria.",
+    "category": "Punk"
+  },
+  {
+    "id": "rec-014",
+    "name": "Endtroducing.....",
+    "description": "DJ Shadow's groundbreaking 1996 album constructed entirely from sampled vinyl, defining instrumental hip-hop.",
+    "category": "Electronic"
+  },
+  {
+    "id": "rec-015",
+    "name": "Legend",
+    "description": "Bob Marley & The Wailers' 1984 reggae compilation, the best-selling reggae album in history.",
+    "category": "Reggae"
+  },
+  {
+    "id": "rec-016",
+    "name": "The Velvet Underground & Nico",
+    "description": "The 1967 debut produced by Andy Warhol, infamous at release but enormously influential on indie and punk rock.",
+    "category": "Avant-Garde"
+  },
+  {
+    "id": "rec-017",
+    "name": "Blonde on Blonde",
+    "description": "Bob Dylan's pioneering 1966 double album blending folk, rock and surrealist lyrics into a new American art form.",
+    "category": "Folk Rock"
+  },
+  {
+    "id": "rec-018",
+    "name": "Dummy",
+    "description": "Portishead's haunting 1994 trip-hop debut fusing cinematic samples, hip-hop beats and Beth Gibbons's spectral vocals.",
+    "category": "Electronic"
+  },
+  {
+    "id": "rec-019",
+    "name": "Innervisions",
+    "description": "Stevie Wonder's 1973 album featuring socially aware lyrics over complex funk and soul arrangements.",
+    "category": "Funk"
+  },
+  {
+    "id": "rec-020",
+    "name": "Pet Sounds",
+    "description": "The Beach Boys' 1966 studio masterpiece, an ambitious orchestral pop record that influenced countless artists.",
+    "category": "Pop"
+  },
+  {
+    "id": "rec-021",
+    "name": "A Love Supreme",
+    "description": "John Coltrane's spiritual 1965 jazz suite dedicated to his faith, recorded in a single session of divine intensity.",
+    "category": "Jazz"
+  },
+  {
+    "id": "rec-022",
+    "name": "Logical Progression",
+    "description": "LTJ Bukem's 1996 drum and bass compilation showcasing atmospheric, jazz-infused liquid jungle sounds.",
+    "category": "Electronic"
+  },
+  {
+    "id": "rec-023",
+    "name": "Graceland",
+    "description": "Paul Simon's 1986 album incorporating South African township music styles, winning the Grammy for Album of the Year.",
+    "category": "World"
+  },
+  {
+    "id": "rec-024",
+    "name": "Remain in Light",
+    "description": "Talking Heads' 1980 art rock album layering African polyrhythms and found-sound textures under David Byrne's anxious vocals.",
+    "category": "Art Rock"
+  }
+]
