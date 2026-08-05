@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Live Diff</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f5f7fa;
+      color: #1a1a2e;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #1a1a2e;
+      color: #fff;
+      padding: 1rem 2rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      padding: 1.5rem 2rem;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .editors {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .editor-pane {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .editor-pane label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #555;
+    }
+
+    textarea {
+      width: 100%;
+      height: 220px;
+      padding: 0.75rem;
+      border: 1.5px solid #ccc;
+      border-radius: 6px;
+      resize: vertical;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      background: #fff;
+      transition: border-color 0.15s;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #4f6ef7;
+    }
+
+    #result {
+      background: #fff;
+      border: 1.5px solid #ccc;
+      border-radius: 6px;
+      padding: 1rem;
+      min-height: 80px;
+    }
+
+    #result .status-msg {
+      font-style: italic;
+      color: #777;
+      font-size: 0.95rem;
+      padding: 0.25rem 0;
+    }
+
+    #result .diff-summary {
+      font-size: 0.85rem;
+      color: #444;
+      margin-bottom: 0.6rem;
+      font-weight: 600;
+    }
+
+    .hunk-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'Courier New', monospace;
+      font-size: 0.88rem;
+    }
+
+    .hunk-table tr td {
+      padding: 1px 6px;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .hunk-table tr.added   td { background: #e6ffed; color: #1a7f37; }
+    .hunk-table tr.removed td { background: #ffebe9; color: #cf222e; }
+    .hunk-table tr.unchanged td { background: #fff;    color: #555;    }
+
+    .hunk-table tr.added   td.marker { user-select: none; color: #1a7f37; font-weight: bold; }
+    .hunk-table tr.removed td.marker { user-select: none; color: #cf222e; font-weight: bold; }
+    .hunk-table tr.unchanged td.marker { user-select: none; color: #bbb; }
+
+    @media (max-width: 640px) {
+      .editors { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>Live Diff</header>
+  <main>
+    <div class="editors">
+      <div class="editor-pane">
+        <label for="left">Original</label>
+        <textarea id="left" placeholder="Paste original text here…"></textarea>
+      </div>
+      <div class="editor-pane">
+        <label for="right">Changed</label>
+        <textarea id="right" placeholder="Paste changed text here…"></textarea>
+      </div>
+    </div>
+    <div id="result" role="region" aria-live="polite" aria-label="Diff result"></div>
+  </main>
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>
