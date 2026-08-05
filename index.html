@@ -3,92 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Would You Rather?</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤔</text></svg>" />
-  <link href="styles.css" rel="stylesheet" />
+  <title>Live Diff</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-
-  <header class="app-header">
-    <div class="header-inner">
-      <span class="header-logo" aria-hidden="true">🤔</span>
-      <h1 class="header-title">Would You Rather?</h1>
+  <div class="container">
+    <h1>Live Diff</h1>
+    <div class="editors">
+      <div class="editor-pane">
+        <label for="left-input">Original</label>
+        <textarea id="left-input" placeholder="Paste original text here…" spellcheck="false"></textarea>
+      </div>
+      <div class="editor-pane">
+        <label for="right-input">Modified</label>
+        <textarea id="right-input" placeholder="Paste modified text here…" spellcheck="false"></textarea>
+      </div>
     </div>
-  </header>
-
-  <nav class="tab-bar" role="tablist" aria-label="App sections">
-    <button
-      class="tab-btn tab-btn--active"
-      role="tab"
-      aria-selected="true"
-      aria-controls="view-game"
-      data-tab="game"
-      id="tab-game"
-    >
-      <span class="tab-icon" aria-hidden="true">🎮</span>
-      <span class="tab-label">Play</span>
-    </button>
-    <button
-      class="tab-btn"
-      role="tab"
-      aria-selected="false"
-      aria-controls="view-stats"
-      data-tab="stats"
-      id="tab-stats"
-    >
-      <span class="tab-icon" aria-hidden="true">📊</span>
-      <span class="tab-label">My Stats</span>
-    </button>
-    <button
-      class="tab-btn"
-      role="tab"
-      aria-selected="false"
-      aria-controls="view-add"
-      data-tab="add"
-      id="tab-add"
-    >
-      <span class="tab-icon" aria-hidden="true">✏️</span>
-      <span class="tab-label">Add Question</span>
-    </button>
-  </nav>
-
-  <main class="app-main">
-
-    <!-- ── Game view ── -->
-    <section
-      id="view-game"
-      class="view view--active"
-      role="tabpanel"
-      aria-labelledby="tab-game"
-    >
-      <!-- Populated by app.js -->
+    <section id="result-region" aria-live="polite" aria-label="Diff result">
+      <p class="placeholder">Start typing in either panel to see the diff.</p>
     </section>
-
-    <!-- ── Stats view ── -->
-    <section
-      id="view-stats"
-      class="view"
-      role="tabpanel"
-      aria-labelledby="tab-stats"
-      hidden
-    >
-      <!-- Populated by app.js -->
-    </section>
-
-    <!-- ── Add-question view ── -->
-    <section
-      id="view-add"
-      class="view"
-      role="tabpanel"
-      aria-labelledby="tab-add"
-      hidden
-    >
-      <!-- Populated by app.js -->
-    </section>
-
-  </main>
-
+  </div>
   <script type="module" src="app.js"></script>
-
 </body>
 </html>
