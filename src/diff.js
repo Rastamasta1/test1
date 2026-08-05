@@ -1,45 +1,12 @@
-// diff.js — pure ES module for computing line-by-line diffs
-// Exports: computeDiff(left, right) -> { type, lines } result object
+// diff.js — UI controller for the live diff tool
+// Attaches input listeners on both sides so the result updates on every edit.
 
-export const NOTHING_TO_COMPARE = 'Nothing to compare';
-export const NO_DIFFERENCES = 'No differences';
+// Inline diff computation (replaces missing diffEngine.js module)
+function computeDiff(leftText, rightText) {
+  const leftLines = leftText.split('\n');
+  const rightLines = rightText.split('\n');
+  const hunks = [];
 
-/**
- * Compute a line-by-line diff between two strings.
- *
- * @param {string} left  - Left/original side text
- * @param {string} right - Right/modified side text
- * @returns {{ type: 'empty'|'identical'|'diff', message?: string, hunks?: Array }}
- */
-export function computeDiff(left, right) {
-  // Blank-input guard: if either side is empty (or whitespace-only), say so plainly
-  const leftTrimmed = (left ?? '').trim();
-  const rightTrimmed = (right ?? '').trim();
-
-  if (leftTrimmed === '' || rightTrimmed === '') {
-    return { type: 'empty', message: NOTHING_TO_COMPARE };
-  }
-
-  const leftLines = left.split('\n');
-  const rightLines = right.split('\n');
-
-  // Identical content check
-  if (left === right) {
-    return { type: 'identical', message: NO_DIFFERENCES };
-  }
-
-  // Compute LCS-based diff
-  const hunks = lcsLineDiff(leftLines, rightLines);
-
-  return { type: 'diff', hunks };
-}
-
-/**
- * LCS-based line diff.
- * Returns an array of hunk objects:
- *   { kind: 'equal'|'removed'|'added', lines: string[] }
- */
-function lcsLineDiff(leftLines, rightLines) {
   const m = leftLines.length;
   const n = rightLines.length;
 
@@ -55,32 +22,90 @@ function lcsLineDiff(leftLines, rightLines) {
     }
   }
 
-  // Backtrack to produce diff operations
-  const ops = [];
+  // Traceback
   let i = m, j = n;
+  const result = [];
   while (i > 0 || j > 0) {
     if (i > 0 && j > 0 && leftLines[i - 1] === rightLines[j - 1]) {
-      ops.push({ kind: 'equal', line: leftLines[i - 1] });
+      result.push({ type: 'unchanged', text: leftLines[i - 1] + '\n' });
       i--; j--;
     } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
-      ops.push({ kind: 'added', line: rightLines[j - 1] });
+      result.push({ type: 'added', text: rightLines[j - 1] + '\n' });
       j--;
     } else {
-      ops.push({ kind: 'removed', line: leftLines[i - 1] });
+      result.push({ type: 'removed', text: leftLines[i - 1] + '\n' });
       i--;
     }
   }
-  ops.reverse();
 
-  // Collapse consecutive same-kind ops into hunks
-  const hunks = [];
-  for (const op of ops) {
-    if (hunks.length > 0 && hunks[hunks.length - 1].kind === op.kind) {
-      hunks[hunks.length - 1].lines.push(op.line);
+  return result.reverse();
+}
+
+const leftEl = document.getElementById('left');
+const rightEl = document.getElementById('right');
+const resultEl = document.getElementById('result');
+
+function computeAndRender() {
+  const leftText = leftEl.value;
+  const rightText = rightEl.value;
+
+  // Identical inputs (including both blank)
+  if (leftText === rightText) {
+    if (leftText.trim() === '') {
+      resultEl.textContent = 'Enter text on either side to see differences.';
     } else {
-      hunks.push({ kind: op.kind, lines: [op.line] });
+      resultEl.textContent = 'No differences — the two inputs are identical.';
     }
+    resultEl.className = 'result result--empty';
+    return;
   }
 
-  return hunks;
+  // One side blank
+  if (leftText.trim() === '') {
+    resultEl.textContent = 'Left side is empty — all content is new on the right.';
+    resultEl.className = 'result result--empty';
+    return;
+  }
+  if (rightText.trim() === '') {
+    resultEl.textContent = 'Right side is empty — all content has been removed.';
+    resultEl.className = 'result result--empty';
+    return;
+  }
+
+  // Compute actual diff
+  const hunks = computeDiff(leftText, rightText);
+  resultEl.innerHTML = renderHunks(hunks);
+  resultEl.className = 'result result--diff';
 }
+
+function renderHunks(hunks) {
+  if (!hunks || hunks.length === 0) {
+    return '<span class="no-diff">No differences found.</span>';
+  }
+  return hunks.map(hunk => {
+    const escapedText = escapeHtml(hunk.text);
+    if (hunk.type === 'added') {
+      return `<ins class="diff-added">${escapedText}</ins>`;
+    } else if (hunk.type === 'removed') {
+      return `<del class="diff-removed">${escapedText}</del>`;
+    } else {
+      return `<span class="diff-unchanged">${escapedText}</span>`;
+    }
+  }).join('');
+}
+
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// Live listeners — recompute on every keystroke on either side
+leftEl.addEventListener('input', computeAndRender);
+rightEl.addEventListener('input', computeAndRender);
+
+// Initial render on page load
+computeAndRender();
