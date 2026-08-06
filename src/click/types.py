@@ -330,10 +330,8 @@ else:
 
 class Choice(ParamType[_ValueT_co], t.Generic[_ValueT_co]):
     """The choice type allows a value to be checked against a fixed set
-    of supported values.
-
-    You may pass any iterable value which will be converted to a tuple
-    and thus will only be iterated once.
+    of supported values.  You may pass any iterable value which will be
+    converted to a tuple and thus will only be iterated once.
 
     The resulting value will always be one of the originally passed choices.
     See :meth:`normalize_choice` for more info on the mapping of strings
@@ -1031,6 +1029,9 @@ class File(ParamType[t.IO[t.Any]]):
 
         return [CompletionItem(incomplete, type="file")]
 
+    def __repr__(self) -> str:
+        return f"File({self.mode!r})"
+
 
 def _is_file_like(value: t.Any) -> te.TypeIs[t.IO[t.Any]]:
     return hasattr(value, "read") or hasattr(value, "write")
@@ -1235,6 +1236,9 @@ class Path(ParamType[str | bytes | os.PathLike[str]]):
         type = "dir" if self.dir_okay and not self.file_okay else "file"
         return [CompletionItem(incomplete, type=type)]
 
+    def __repr__(self) -> str:
+        return f"Path({self.name!r})"
+
 
 class TupleInfoDict(ParamTypeInfoDict):
     types: cabc.Sequence[ParamTypeInfoDict]
@@ -1291,6 +1295,9 @@ class Tuple(CompositeParamType[tuple[t.Any, ...]]):
         return tuple(
             ty(x, param, ctx) for ty, x in zip(self.types, value, strict=False)
         )
+
+    def __repr__(self) -> str:
+        return f"Tuple({list(self.types)!r})"
 
 
 def _guess_type(
