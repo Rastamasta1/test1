@@ -52,6 +52,11 @@ class stop_any(stop_base):
     def __call__(self, retry_state: "RetryCallState") -> bool:
         return any(x(retry_state) for x in self.stops)
 
+    @override
+    def __repr__(self) -> str:
+        stops_repr = ", ".join(repr(s) for s in self.stops)
+        return f"stop_any({stops_repr})"
+
 
 class stop_all(stop_base):
     """Stop if all the stop conditions are valid."""
@@ -63,6 +68,11 @@ class stop_all(stop_base):
     def __call__(self, retry_state: "RetryCallState") -> bool:
         return all(x(retry_state) for x in self.stops)
 
+    @override
+    def __repr__(self) -> str:
+        stops_repr = ", ".join(repr(s) for s in self.stops)
+        return f"stop_all({stops_repr})"
+
 
 class _stop_never(stop_base):
     """Never stop."""
@@ -70,6 +80,10 @@ class _stop_never(stop_base):
     @override
     def __call__(self, retry_state: "RetryCallState") -> bool:
         return False
+
+    @override
+    def __repr__(self) -> str:
+        return "stop_never"
 
 
 stop_never = _stop_never()
@@ -85,6 +99,10 @@ class stop_when_event_set(stop_base):
     def __call__(self, retry_state: "RetryCallState") -> bool:
         return self.event.is_set()
 
+    @override
+    def __repr__(self) -> str:
+        return f"stop_when_event_set(event={self.event!r})"
+
 
 class stop_after_attempt(stop_base):
     """Stop when the previous attempt >= max_attempt."""
@@ -95,6 +113,10 @@ class stop_after_attempt(stop_base):
     @override
     def __call__(self, retry_state: "RetryCallState") -> bool:
         return retry_state.attempt_number >= self.max_attempt_number
+
+    @override
+    def __repr__(self) -> str:
+        return f"stop_after_attempt(max_attempt_number={self.max_attempt_number!r})"
 
 
 class stop_after_delay(stop_base):
@@ -116,6 +138,10 @@ class stop_after_delay(stop_base):
             raise RuntimeError("__call__() called but seconds_since_start is not set")
         return retry_state.seconds_since_start >= self.max_delay
 
+    @override
+    def __repr__(self) -> str:
+        return f"stop_after_delay(max_delay={self.max_delay!r})"
+
 
 class stop_before_delay(stop_base):
     """
@@ -136,3 +162,7 @@ class stop_before_delay(stop_base):
             retry_state.seconds_since_start + retry_state.upcoming_sleep
             >= self.max_delay
         )
+
+    @override
+    def __repr__(self) -> str:
+        return f"stop_before_delay(max_delay={self.max_delay!r})"
