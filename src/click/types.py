@@ -1309,23 +1309,25 @@ def _guess_type(
     if default is None:
         return None
 
-    if not isinstance(default, (tuple, list)):
-        return type(default)
+    # Test isinstance(default, (tuple, list)) exactly once.  When the
+    # default is a sequence we inspect its first element to decide whether
+    # we have a sequence-of-sequences (Tuple nargs) or a plain sequence
+    # (multiple scalar values).  Both cases are handled inside this single
+    # branch so the check never needs to be repeated.
+    if isinstance(default, (tuple, list)):
+        if not default:
+            # Empty sequence: fall through to STRING in convert_type.
+            return None
 
-    # If the default is empty, return None so convert_type falls
-    # through to STRING.
-    if not default:
-        return None
+        item = default[0]
 
-    item = default[0]
+        if isinstance(item, (tuple, list)):
+            # Sequence of sequences: extract the inner types for a Tuple.
+            return tuple(map(type, item))
 
-    # A sequence of iterables needs to detect the inner types.
-    # Can't call convert_type recursively because that would
-    # incorrectly unwind the tuple to a single type.
-    if isinstance(item, (tuple, list)):
-        return tuple(map(type, item))
+        return type(item)
 
-    return type(item)
+    return type(default)
 
 
 @t.overload
