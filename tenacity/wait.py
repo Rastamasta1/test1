@@ -68,6 +68,10 @@ class wait_fixed(wait_base):
     def __call__(self, retry_state: "RetryCallState") -> float:
         return self.wait_fixed
 
+    @override
+    def __repr__(self) -> str:
+        return f"wait_fixed(wait={self.wait_fixed!r})"
+
 
 class wait_none(wait_fixed):
     """Wait strategy that doesn't wait at all before retrying."""
@@ -91,6 +95,10 @@ class wait_random(wait_base):
             random.random() * (self.wait_random_max - self.wait_random_min)
         )
 
+    @override
+    def __repr__(self) -> str:
+        return f"wait_random(min={self.wait_random_min!r}, max={self.wait_random_max!r})"
+
 
 class wait_combine(wait_base):
     """Combine several waiting strategies."""
@@ -105,6 +113,11 @@ class wait_combine(wait_base):
         # keyword crashed on any callable whose parameter is not named
         # `retry_state`.
         return float(sum(x(retry_state) for x in self.wait_funcs))
+
+    @override
+    def __repr__(self) -> str:
+        strategies_repr = ", ".join(repr(s) for s in self.wait_funcs)
+        return f"wait_combine({strategies_repr})"
 
 
 class wait_chain(wait_base):
@@ -133,6 +146,11 @@ class wait_chain(wait_base):
         wait_func_no = min(max(retry_state.attempt_number, 1), len(self.strategies))
         wait_func = self.strategies[wait_func_no - 1]
         return wait_func(retry_state=retry_state)
+
+    @override
+    def __repr__(self) -> str:
+        strategies_repr = ", ".join(repr(s) for s in self.strategies)
+        return f"wait_chain({strategies_repr})"
 
 
 class wait_exception(wait_base):
@@ -197,6 +215,10 @@ class wait_incrementing(wait_base):
         result = self.start + (self.increment * (retry_state.attempt_number - 1))
         return max(0, min(result, self.max))
 
+    @override
+    def __repr__(self) -> str:
+        return f"wait_incrementing(start={self.start!r}, increment={self.increment!r}, max={self.max!r})"
+
 
 class wait_exponential(wait_base):
     """Wait strategy that applies exponential backoff.
@@ -243,6 +265,16 @@ class wait_exponential(wait_base):
             return self.max
         return max(max(0, self.min), min(result, self.max))
 
+    @override
+    def __repr__(self) -> str:
+        return (
+            f"wait_exponential("
+            f"multiplier={self.multiplier!r}, "
+            f"max={self.max!r}, "
+            f"exp_base={self.exp_base!r}, "
+            f"min={self.min!r})"
+        )
+
 
 class wait_random_exponential(wait_exponential):
     """Random wait with exponentially widening window.
@@ -274,6 +306,16 @@ class wait_random_exponential(wait_exponential):
     def __call__(self, retry_state: "RetryCallState") -> float:
         high = super().__call__(retry_state=retry_state)
         return random.uniform(self.min, high)
+
+    @override
+    def __repr__(self) -> str:
+        return (
+            f"wait_random_exponential("
+            f"multiplier={self.multiplier!r}, "
+            f"max={self.max!r}, "
+            f"exp_base={self.exp_base!r}, "
+            f"min={self.min!r})"
+        )
 
 
 class wait_exponential_jitter(wait_base):
@@ -325,3 +367,14 @@ class wait_exponential_jitter(wait_base):
         except OverflowError:
             result = self.max
         return max(max(0, self.min), min(result, self.max))
+
+    @override
+    def __repr__(self) -> str:
+        return (
+            f"wait_exponential_jitter("
+            f"multiplier={self.multiplier!r}, "
+            f"max={self.max!r}, "
+            f"exp_base={self.exp_base!r}, "
+            f"jitter={self.jitter!r}, "
+            f"min={self.min!r})"
+        )
