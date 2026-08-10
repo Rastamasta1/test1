@@ -58,23 +58,30 @@ class LoggerProtocol(typing.Protocol):
     def log(self, level: int, msg: str, *args: typing.Any) -> typing.Any: ...
 
 
+# Ordinal suffixes indexed by last digit (0-9).
+# Digits 1, 2, 3 get "st", "nd", "rd"; all others get "th".
+# The 11/12/13 teen exception overrides this and always returns "th".
+_ORDINAL_SUFFIXES: tuple[str, ...] = (
+    "th",  # 0
+    "st",  # 1
+    "nd",  # 2
+    "rd",  # 3
+    "th",  # 4
+    "th",  # 5
+    "th",  # 6
+    "th",  # 7
+    "th",  # 8
+    "th",  # 9
+)
+
+
 def find_ordinal(pos_num: int) -> str:
     # See: https://en.wikipedia.org/wiki/English_numerals#Ordinal_numbers
-
+    # The 11th/12th/13th exception: numbers whose last two digits are 11, 12,
+    # or 13 always take "th" regardless of their last digit.
     if 11 <= (pos_num % 100) <= 13:
         return "th"
-
-    if pos_num == 0:
-        return "th"
-    if pos_num == 1:
-        return "st"
-    if pos_num == 2:
-        return "nd"
-    if pos_num == 3:
-        return "rd"
-    if 4 <= pos_num <= 20:
-        return "th"
-    return find_ordinal(pos_num % 10)
+    return _ORDINAL_SUFFIXES[pos_num % 10]
 
 
 def to_ordinal(pos_num: int) -> str:
