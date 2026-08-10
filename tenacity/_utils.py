@@ -58,23 +58,32 @@ class LoggerProtocol(typing.Protocol):
     def log(self, level: int, msg: str, *args: typing.Any) -> typing.Any: ...
 
 
+# Lookup table indexed by last digit (0-9).
+# Entries 1, 2, 3 give the special suffixes; everything else is "th".
+# The 11/12/13 teen exception is handled before this table is consulted.
+_ORDINAL_BY_LAST_DIGIT: tuple[str, ...] = (
+    "th",  # 0
+    "st",  # 1
+    "nd",  # 2
+    "rd",  # 3
+    "th",  # 4
+    "th",  # 5
+    "th",  # 6
+    "th",  # 7
+    "th",  # 8
+    "th",  # 9
+)
+
+
 def find_ordinal(pos_num: int) -> str:
     # See: https://en.wikipedia.org/wiki/English_numerals#Ordinal_numbers
-
+    #
+    # The "teen" numbers 11, 12, 13 (and their 100-multiples) all take "th"
+    # regardless of their last digit, so check the last two digits first.
     if 11 <= (pos_num % 100) <= 13:
         return "th"
-
-    if pos_num == 0:
-        return "th"
-    if pos_num == 1:
-        return "st"
-    if pos_num == 2:
-        return "nd"
-    if pos_num == 3:
-        return "rd"
-    if 4 <= pos_num <= 20:
-        return "th"
-    return find_ordinal(pos_num % 10)
+    # For all other numbers the suffix depends only on the last digit.
+    return _ORDINAL_BY_LAST_DIGIT[pos_num % 10]
 
 
 def to_ordinal(pos_num: int) -> str:
