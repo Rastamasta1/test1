@@ -5,34 +5,8 @@ import textwrap
 from contextlib import contextmanager
 
 from ._compat import _ansi_re
+from ._compat import _truncate_visible
 from ._compat import term_len
-
-
-def _truncate_visible(text: str, n: int) -> str:
-    """Return the longest prefix of ``text`` containing at most ``n`` visible
-    characters.
-
-    ANSI escape sequences inside the prefix are kept intact and do not count
-    toward the visible width. A cut is never placed inside an escape sequence.
-    """
-    if n <= 0:
-        return ""
-
-    visible = 0
-    i = 0
-    cut = 0
-    end = len(text)
-    while i < end:
-        m = _ansi_re.match(text, i)
-        if m is not None:
-            i = m.end()
-            continue
-        visible += 1
-        i += 1
-        cut = i
-        if visible >= n:
-            break
-    return text[:cut]
 
 
 class TextWrapper(textwrap.TextWrapper):
@@ -57,7 +31,7 @@ class TextWrapper(textwrap.TextWrapper):
         if self.break_long_words:
             last = reversed_chunks[-1]
             cut = _truncate_visible(last, space_left)
-            res = last[len(cut) :]
+            res = last[len(cut):]
             cur_line.append(cut)
             reversed_chunks[-1] = res
         elif not cur_line:
