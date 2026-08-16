@@ -3,6 +3,7 @@ from __future__ import annotations
 import errno
 import json
 import os
+import sys
 import types
 import typing as t
 
@@ -303,6 +304,40 @@ class Config(dict):  # type: ignore[type-arg]
             raise
 
         return self.from_mapping(obj)
+
+    def from_toml(
+        self, filename: str | os.PathLike[str], silent: bool = False
+    ) -> bool:
+        """Update the values in the config from a TOML file. The file is
+        opened in binary mode and parsed with :mod:`tomllib`, which is
+        part of the standard library in Python 3.11+.
+
+        This is a convenience wrapper around :meth:`from_file` that
+        avoids repeating the ``load=tomllib.load, text=False`` arguments
+        at every call site::
+
+            app.config.from_toml("config.toml")
+
+        :param filename: The path to the TOML file. This can be an
+            absolute path or relative to the config root path.
+        :param silent: Ignore the file if it doesn't exist.
+        :return: ``True`` if the file was loaded successfully.
+        """
+        if sys.version_info >= (3, 11):
+            import tomllib
+        else:
+            try:
+                import tomllib  # type: ignore[no-redef]
+            except ImportError:
+                try:
+                    import tomli as tomllib  # type: ignore[no-redef]
+                except ImportError as exc:
+                    raise RuntimeError(
+                        "Python < 3.11 requires the 'tomli' package to load TOML"
+                        " files. Install it with: pip install tomli"
+                    ) from exc
+
+        return self.from_file(filename, load=tomllib.load, silent=silent, text=False)
 
     def from_mapping(
         self, mapping: t.Mapping[str, t.Any] | None = None, **kwargs: t.Any
