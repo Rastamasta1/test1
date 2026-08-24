@@ -6,7 +6,7 @@
  *   buildDeck()    — returns all questions (built-ins + custom) in randomized order
  */
 
-import { getQuestions } from './storage.js';
+import { getQuestions, computeSplit } from './storage.js';
 
 /**
  * Fisher-Yates shuffle — pure function, does not mutate the input array.
@@ -34,4 +34,14 @@ export function shuffle(arr) {
  */
 export function buildDeck() {
   return shuffle(getQuestions());
+}
+
+/**
+ * Same as buildDeck(), but each question is decorated with a `split`
+ * property ({aPct,bPct}) computed via computeSplit(). Custom questions
+ * have no `votes` property and must not crash.
+ * @returns {Array}
+ */
+export function deckWithSplits() {
+  return buildDeck().map(q => ({ ...q, split: computeSplit(q.votes ?? { a: 0, b: 0 }) }));
 }

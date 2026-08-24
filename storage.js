@@ -131,6 +131,21 @@ export function getVotes(questionId) {
 }
 
 /**
+ * Pure: compute integer vote-split percentages that always sum to 100.
+ * Zero total votes returns a 50/50 split. No DOM, no localStorage.
+ * @param {{a?:number,b?:number}} votes
+ * @returns {{aPct:number, bPct:number}}
+ */
+export function computeSplit(votes) {
+  const a = (votes && votes.a) || 0;
+  const b = (votes && votes.b) || 0;
+  const total = a + b;
+  if (total === 0) return { aPct: 50, bPct: 50 };
+  const aPct = Math.round((a / total) * 100);
+  return { aPct, bPct: 100 - aPct };
+}
+
+/**
  * Persist one vote (choice = 'a' or 'b') for a question.
  */
 export function recordVote(questionId, choice) {
