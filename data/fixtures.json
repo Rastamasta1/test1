@@ -1,0 +1,16 @@
+[
+  { "id": 1, "name": "Steel Hammer", "description": "A durable claw hammer with a rubber grip handle.", "quantity": 42 },
+  { "id": 2, "name": "Cordless Drill", "description": "18V cordless drill with two lithium-ion batteries.", "quantity": 15 },
+  { "id": 3, "name": "Adjustable Wrench", "description": "10-inch adjustable wrench with chrome finish.", "quantity": 60 },
+  { "id": 4, "name": "Wood Screws (Box of 100)", "description": "Assorted wood screws for general carpentry.", "quantity": 200 },
+  { "id": 5, "name": "Safety Goggles", "description": "Impact-resistant clear safety goggles.", "quantity": 75 },
+  { "id": 6, "name": "Measuring Tape", "description": "25-foot retractable measuring tape with belt clip.", "quantity": 90 },
+  { "id": 7, "name": "Work Gloves", "description": "Leather-palm work gloves, size large.", "quantity": 120 },
+  { "id": 8, "name": "LED Flashlight", "description": "Rechargeable LED flashlight with 3 brightness modes.", "quantity": 34 },
+  { "id": 9, "name": "Extension Cord", "description": "25-foot heavy-duty outdoor extension cord.", "quantity": 28 },
+  { "id": 10, "name": "Paint Roller Set", "description": "9-inch paint roller with two replacement covers.", "quantity": 50 },
+  { "id": 11, "name": "Duct Tape", "description": "Heavy-duty silver duct tape, 60 yards.", "quantity": 150 },
+  { "id": 12, "name": "Utility Knife", "description": "Retractable utility knife with spare blades.", "quantity": 65 },
+  { "id": 13, "name": "Step Ladder", "description": "4-foot aluminum step ladder, 225 lb capacity.", "quantity": 12 },
+  { "id": 14, "name": "Shop Vacuum", "description": "6-gallon wet/dry shop vacuum with hose attachment.", "quantity": 9 }
+]
