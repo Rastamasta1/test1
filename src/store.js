@@ -12,6 +12,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { record as recordHistory } from './history.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FIXTURES_PATH = path.join(__dirname, '..', 'data', 'fixtures.json');
@@ -31,6 +32,7 @@ const records = loadFixtures();
  */
 export function add(record) {
   records.push(record);
+  recordHistory(record.id, `added record`);
   return record;
 }
 
@@ -53,6 +55,7 @@ export function remove(id) {
   const idx = records.findIndex(r => r.id === id);
   if (idx === -1) return null;
   const [removed] = records.splice(idx, 1);
+  recordHistory(removed.id, `removed record`);
   return removed;
 }
 
@@ -80,6 +83,7 @@ export function adjust(id, delta) {
   const next = record.quantity + delta;
   if (next < 0) return record;
   record.quantity = next;
+  recordHistory(record.id, `adjusted quantity by ${delta} to ${next}`);
   return record;
 }
 
