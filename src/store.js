@@ -66,6 +66,16 @@ export function find(id) {
 }
 
 /**
+ * Search records whose name contains the query substring.
+ * @param {string} query
+ * @returns {object[]} records whose name includes query (case-sensitive substring match)
+ */
+export function search(query) {
+  if (!query) return [];
+  return records.filter(r => r.name.includes(query));
+}
+
+/**
  * Count of records currently in the store.
  * @returns {number}
  */
