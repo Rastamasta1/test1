@@ -66,6 +66,24 @@ export function find(id) {
 }
 
 /**
+ * Adjust a record's quantity by a signed delta (positive raises, negative lowers).
+ * Refuses to let quantity go below zero: if record.quantity + delta < 0,
+ * the record is returned unchanged (delta not applied).
+ * @param {number|string} id
+ * @param {number} delta
+ * @returns {object|undefined} the record (updated in place, or unchanged if the
+ *   guard blocked it), or undefined if no record with that id exists
+ */
+export function adjust(id, delta) {
+  const record = find(id);
+  if (!record) return undefined;
+  const next = record.quantity + delta;
+  if (next < 0) return record;
+  record.quantity = next;
+  return record;
+}
+
+/**
  * Search records whose name contains the query substring.
  * @param {string} query
  * @returns {object[]} records whose name includes query (case-sensitive substring match)

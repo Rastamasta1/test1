@@ -15,7 +15,7 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { search, remove, find, list, count } from '../src/store.js';
+import { search, remove, find, list, count, adjust } from '../src/store.js';
 
 test('search(q) matches some records but not all', () => {
   const total = count();
@@ -33,6 +33,24 @@ test('search(q) matches some records but not all', () => {
   nonMatches.forEach(r => {
     assert.ok(!r.name.includes('Basket'), `record "${r.name}" should not contain "Basket"`);
   });
+});
+
+test('adjust(id, delta) raises, lowers, and refuses to go below zero', () => {
+  // Fixture id 1 (Copper Kettle) starts at quantity 12.
+  const raised = adjust(1, 5);
+  assert.equal(raised.quantity, 17, 'raising by 5 should give 17');
+
+  const lowered = adjust(1, -3);
+  assert.equal(lowered.quantity, 14, 'lowering by 3 should give 14');
+
+  // Fixture id 14 (Pewter Bookend Pair) starts at quantity 7 — too low to absorb a big drop.
+  const before = find(14).quantity;
+  assert.equal(before, 7, 'sanity check on fixture id 14 starting quantity');
+  const blocked = adjust(14, -100);
+  assert.equal(blocked.quantity, before, 'quantity must be unchanged when delta would go below zero');
+  assert.equal(blocked.quantity, 7);
+
+  assert.equal(adjust(9999, 1), undefined, 'adjusting a nonexistent id returns undefined');
 });
 
 test('remove() returns the removed record and is idempotent', () => {
