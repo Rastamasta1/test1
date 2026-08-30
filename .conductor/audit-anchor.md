@@ -12,23 +12,23 @@ path is reserved, and a push whose payload contains it is refused.
 ## The anchor
 
 ```
-chain head sequence      20906
-chain head hash          f8464ac191f5636e73a701b195d92f8358c0ff7625807fc7d6387c5059a19bc6
-head row written at      2026-08-30T15:33:23.220Z
+chain head sequence      20945
+chain head hash          c4180e4157484e651ecf03effbce45eb8529c08aff22ca223d5700cb8d0fd002
+head row written at      2026-08-30T15:35:11.129Z
 chain genesis at         2026-06-26T10:52:06.958Z
-published at             2026-08-30T15:33:23.593Z
+published at             2026-08-30T15:35:11.497Z
 published into           Rastamasta1/test1
-carried by intent        644c55a8-62e7-4025-ba5d-65db2af90a20
+carried by intent        d5efe9b7-9e03-4113-becd-098c5e087199
 cockpit build            8ea8732
 ```
 
 ## The previous anchor, so a gap is visible
 
 ```
-previous head sequence   20849
-previous head hash       997b1d511f989f2462d6d412aa5915179f98a2e8e317b9000be3c4f9fb02c839
-previous published at    2026-08-30T13:48:31.708Z
-audit rows added since   57
+previous head sequence   20906
+previous head hash       f8464ac191f5636e73a701b195d92f8358c0ff7625807fc7d6387c5059a19bc6
+previous published at    2026-08-30T15:33:26.043Z
+audit rows added since   39
 ```
 
 Consecutive anchors form their own chain inside this repository. If the
@@ -38,14 +38,14 @@ anchor is in this file's git history — `git log .conductor/audit-anchor.md`.
 
 ## What this proves
 
-  - Every audit row up to sequence 20906 hashes, in order, to the head
+  - Every audit row up to sequence 20945 hashes, in order, to the head
     hash above. Each row's hash covers the previous row's hash, so the
     sequence cannot be reordered, and no row can be removed from the middle
     without the following hashes disagreeing.
   - This file is committed to this repository, so the hash above existed at
     this commit's date — a date recorded in this repository's history, which
     Conductor does not administer and cannot rewrite.
-  - Therefore any later edit to any audit row at or below sequence 20906
+  - Therefore any later edit to any audit row at or below sequence 20945
     makes Conductor's recomputed head disagree with the hash committed here,
     and the disagreement is detectable by anyone holding this file.
 
@@ -74,6 +74,6 @@ anchor is in this file's git history — `git log .conductor/audit-anchor.md`.
   2. Ask Conductor to recompute the chain over the same range. Its
      `verify_audit_chain()` walks every row in sequence order, recomputing
      each row's hash from the row's own contents and the previous hash.
-  3. The head it produces for sequence 20906 must equal the hash above.
+  3. The head it produces for sequence 20945 must equal the hash above.
      If it does not, something at or below that sequence changed after this
      commit was made.
