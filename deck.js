@@ -2,7 +2,9 @@
  * deck.js — deck building and shuffling for Would You Rather.
  *
  * Exports:
- *   shuffle(arr)   — pure Fisher-Yates shuffle; returns a new array
+ *   shuffle(arr, seed?) — pure Fisher-Yates shuffle; returns a new array. When a
+ *                          numeric seed is supplied, output is deterministic (same
+ *                          arr + seed always yields the same order); omitted, uses Math.random()
  *   buildDeck()    — returns all questions (built-ins + custom) in randomized order
  */
 
