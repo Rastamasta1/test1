@@ -7,6 +7,14 @@ update rebuilds the whole file.
 
 ## 2026-09-01
 
+### Add documentation and packaging details
+
+We added a new guide at the top of the project that explains how the card-building and question-storage parts work. We also updated the project's summary text so it matches the new guide.
+
+**Why:** The project had no guide before, and it was missing the summary file entirely, so we created both. We then checked that these changes did not break anything.
+
+**What you'll notice:** The new guide includes the plain descriptions of the shuffle, deck-building and question features and how to run the tests. The summary text is valid and mentions 'drill ground'. All 34 tests passed with 0 failed, and both new files are in place.
+
 ### Repeatable Card Shuffle with Optional Seed
 
 The card shuffle now accepts an optional starting value so the same value always produces the same order. Without that value, the shuffle stays random as before. New tests confirm both behaviours, and the notes at the top of the file were updated to match.
