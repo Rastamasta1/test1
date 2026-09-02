@@ -13,15 +13,7 @@ import {
   updateQuestion,
 } from './storage.js';
 
-// ── Utility: escape HTML ──────────────────────────────────────────────────
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
+import { escHtml } from './escapeHtml.js';
 
 // ── Render a single custom-question card ─────────────────────────────────
 function renderCustomCard(q) {
@@ -91,7 +83,7 @@ function attachCustomCardListeners(container, onMutate) {
         onMutate();
       });
 
-      card.querySelector(`#edit-form-${id}`).addEventListener('submit', e => {
+      card.querySelector(`#edit-form-${escHtml(id)}`).addEventListener('submit', e => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const newA = formData.get('optionA').trim();
