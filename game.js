@@ -15,6 +15,7 @@ import {
   getSessionVotes,
   recordSessionVote,
 } from './storage.js';
+import { escHtml } from './escapeHtml.js';
 
 // ── Shuffle (Fisher-Yates) ─────────────────────────────────────────────────
 function shuffle(arr) {
@@ -200,14 +201,4 @@ function renderEmpty() {
       <p class="done-sub">Head to <strong>Add Question</strong> to create your first one.</p>
     </div>
   `;
-}
-
-// ── Utility: escape HTML to prevent XSS from custom question text ─────────
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
 }

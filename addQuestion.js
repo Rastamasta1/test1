@@ -6,16 +6,8 @@
  */
 
 import { saveCustomQuestion } from './customQuestions.js';
+import { escHtml } from './escapeHtml.js';
 
-// ── Utility: escape HTML ──────────────────────────────────────────────────
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
 
 /**
  * Render the Add Your Own Question form into the given container element.
