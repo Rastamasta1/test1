@@ -4,6 +4,10 @@ This repository is the Conductor factory's drill ground — a small, self-contai
 
 ## Modules
 
+### `escapeHtml.js`
+
+- `escHtml(str)` — a shared HTML-escaping helper. Coerces input via `String(str)` and escapes the five characters unsafe to interpolate into HTML: `& < > " '`. Imported by `stats.js`, `addQuestion.js`, and `game.js` instead of each file defining its own copy.
+
 ### `deck.js`
 
 - `shuffle(arr, seed?)` — a pure Fisher-Yates shuffle. It returns a new array and never mutates the input `arr`. When a numeric `seed` is supplied, the result is deterministic: calling `shuffle(arr, seed?)` again with the same array contents and the same seed always yields an identical order. When `seed` is omitted, ordering comes from `Math.random()` and is non-deterministic, exactly as before seeding was added.
