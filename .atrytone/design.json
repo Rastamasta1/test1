@@ -1,0 +1,10 @@
+{
+  "design_executor": "lovable",
+  "project_id": "897a6d18-6f94-4e53-b96d-a031fedc7b50",
+  "workspace_id": "rhqJHedjy2jJbHlhkJCN",
+  "preview_url": "https://id-preview--897a6d18-6f94-4e53-b96d-a031fedc7b50.lovable.app",
+  "editor_url": "https://lovable.dev/projects/897a6d18-6f94-4e53-b96d-a031fedc7b50",
+  "commit": null,
+  "files_imported": false,
+  "note": "created 2026-09-09T06:56:30Z by attempt 6 (run 935cc834) of epic b6eac8cb, which was cancelled before the files were imported; the project EXISTS \u2014 import its files (lovable_import_project with this project_id) and set commit + files_imported here; do not create another project"
+}
