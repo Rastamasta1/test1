@@ -12,22 +12,22 @@ path is reserved, and a push whose payload contains it is refused.
 ## The anchor
 
 ```
-chain head sequence      31475
-chain head hash          15d930ab3e301b516193c75e0eedda33bf6e2a3937813c4f8ced1df69a497818
-head row written at      2026-09-09T15:31:46.317Z
+chain head sequence      31517
+chain head hash          7cc1ea4d523d76e82bed6e24ab2f01724190f99022a3bbe6816f4217775119f7
+head row written at      2026-09-09T15:33:40.963Z
 chain genesis at         2026-06-26T10:52:06.958Z
-published at             2026-09-09T15:31:47.718Z
+published at             2026-09-09T15:33:43.622Z
 published into           Rastamasta1/test1
-carried by intent        4eb0f4ce-d55e-45ea-a8d1-bdc6f6fc79af
+carried by intent        197c4fc0-4bb6-4ef0-865b-04861cbebe53
 cockpit build            457d65a
 ```
 
 ## The previous anchor, so a gap is visible
 
 ```
-previous head sequence   31433
-previous head hash       bb53feb8d233dcd08b22a1b47b362fc737e003ff86cb10af29bdda97737532b9
-previous published at    2026-09-09T15:30:16.665Z
+previous head sequence   31475
+previous head hash       15d930ab3e301b516193c75e0eedda33bf6e2a3937813c4f8ced1df69a497818
+previous published at    2026-09-09T15:31:50.047Z
 audit rows added since   42
 ```
 
@@ -38,14 +38,14 @@ anchor is in this file's git history — `git log .conductor/audit-anchor.md`.
 
 ## What this proves
 
-- Every audit row up to sequence 31475 hashes, in order, to the head
+- Every audit row up to sequence 31517 hashes, in order, to the head
   hash above. Each row's hash covers the previous row's hash, so the
   sequence cannot be reordered, and no row can be removed from the middle
   without the following hashes disagreeing.
 - This file is committed to this repository, so the hash above existed at
   this commit's date — a date recorded in this repository's history, which
   Atrytone does not administer and cannot rewrite.
-- Therefore any later edit to any audit row at or below sequence 31475
+- Therefore any later edit to any audit row at or below sequence 31517
   makes Atrytone's recomputed head disagree with the hash committed here,
   and the disagreement is detectable by anyone holding this file.
 
@@ -74,6 +74,6 @@ anchor is in this file's git history — `git log .conductor/audit-anchor.md`.
 2. Ask Atrytone to recompute the chain over the same range. Its
    `verify_audit_chain()` walks every row in sequence order, recomputing
    each row's hash from the row's own contents and the previous hash.
-3. The head it produces for sequence 31475 must equal the hash above.
+3. The head it produces for sequence 31517 must equal the hash above.
    If it does not, something at or below that sequence changed after this
    commit was made.
