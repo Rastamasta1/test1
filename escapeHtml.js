@@ -6,7 +6,7 @@
  *     the five characters unsafe to interpolate into HTML: & < > " '
  */
 
-export function escHtml(str) {
+export function escHtmlRenamed(str) {
   return String(str)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
