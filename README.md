@@ -30,6 +30,10 @@ All localStorage persistence for the app. Exports, as implemented:
 - `resetStats()` — resets stats and votes back to zero and clears session votes.
 - `BUILTIN_QUESTIONS` — the exported constant array of 15 built-in question objects, each with seeded baseline vote counts.
 
+## Goal loop
+
+This drill ground records each `goal-built change` the factory produces as it exercises the build, test, and governance loop end to end. Every change that lands here moves through the same loop, stage by stage: `plan → build → verify → push`. Planning turns an idea into concrete tasks, building has the swarm write the actual file contents, verification runs the test suite and checkpoint gates against that work, and pushing carries the verified change onward. Recording each goal-built change this way keeps the loop's history legible — what was planned, what was built, what was verified, and what was pushed are all part of the same trail.
+
 ## Running the tests
 
 The full test suite is run with `node --test test/`. This runs every `*.test.js`/`*.test.mjs` file under the `test/` directory using Node's built-in test runner.
