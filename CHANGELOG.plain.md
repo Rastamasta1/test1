@@ -22,3 +22,5 @@ The card shuffle now accepts an optional starting value so the same value always
 **Why:** This delivers the promised behaviour where you can get a predictable, repeatable order when you want it, while keeping randomness the rest of the time.
 
 **What you'll notice:** The full test set passed with 29 passed and 0 failed. These results were reported by the worker's checker and confirmed to be about the right requirement, but they were not independently re-checked here.
+
+2026-09-16b — Goal-loop drill: authored, signed and merged by an Atrytone goal.
