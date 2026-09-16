@@ -33,3 +33,4 @@ All localStorage persistence for the app. Exports, as implemented:
 ## Running the tests
 
 The full test suite is run with `node --test test/`. This runs every `*.test.js`/`*.test.mjs` file under the `test/` directory using Node's built-in test runner.
+Goal-loop drill 2026-09-16b: authored, signed and merged by an Atrytone goal.
