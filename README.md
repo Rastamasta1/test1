@@ -30,6 +30,10 @@ All localStorage persistence for the app. Exports, as implemented:
 - `resetStats()` — resets stats and votes back to zero and clears session votes.
 - `BUILTIN_QUESTIONS` — the exported constant array of 15 built-in question objects, each with seeded baseline vote counts.
 
+## Goal-loop drills
+
+This drill ground records each goal-built change as a dated drill entry, so the factory's author-sign-merge loop leaves an auditable trail directly in the documentation.
+
 ## Running the tests
 
 The full test suite is run with `node --test test/`. This runs every `*.test.js`/`*.test.mjs` file under the `test/` directory using Node's built-in test runner.
