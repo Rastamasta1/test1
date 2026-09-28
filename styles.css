@@ -343,6 +343,16 @@ a { color: var(--accent); }
   opacity: 0.92;
 }
 
+@keyframes keyPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+.choice-card--keypulse {
+  animation: keyPulse 0.3s ease-out 1;
+}
+
 .choice-letter {
   display: inline-flex;
   align-items: center;
