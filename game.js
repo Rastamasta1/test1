@@ -46,6 +46,11 @@ export function keyAction(key, revealed) {
   return null;
 }
 
+// ── Public: class modifier for a card chosen via keyboard (pure) ──────────
+export function keyPulseClass(fromKey) {
+  return fromKey ? ' choice-card--keypulse' : '';
+}
+
 // ── Public: mount game view ───────────────────────────────────────────────
 export function initGame(containerEl) {
   container = containerEl;
@@ -65,9 +70,9 @@ function handleKeydown(event) {
   if (!action || !currentQuestion) return;
 
   if (action === 'A') {
-    handleChoice(currentQuestion, 'a');
+    handleChoice(currentQuestion, 'a', true);
   } else if (action === 'B') {
-    handleChoice(currentQuestion, 'b');
+    handleChoice(currentQuestion, 'b', true);
   } else if (action === 'next') {
     handleNext();
   }
@@ -108,11 +113,11 @@ function renderCurrent() {
   }
 
   const question = deck[currentIndex];
-  renderQuestion(question, false);
+  renderQuestion(question, false, false);
 }
 
 // ── Render a single question with choice cards ───────────────────────────
-function renderQuestion(question, revealed) {
+function renderQuestion(question, revealed, fromKey) {
   currentQuestion = question;
   currentRevealed = revealed;
 
@@ -141,7 +146,7 @@ function renderQuestion(question, revealed) {
       <div class="cards-row">
         <!-- Option A -->
         <button
-          class="choice-card choice-card--a${revealed ? ' choice-card--revealed' : ''}${alreadyVoted && sessionVotes[question.id] === 'a' ? ' choice-card--chosen' : ''}"
+          class="choice-card choice-card--a${revealed ? ' choice-card--revealed' : ''}${alreadyVoted && sessionVotes[question.id] === 'a' ? ' choice-card--chosen' + keyPulseClass(fromKey) : ''}"
           data-choice="a"
           ${alreadyVoted ? 'disabled aria-disabled="true"' : ''}
           aria-label="Choose: ${escHtml(question.optionA)}"
@@ -160,7 +165,7 @@ function renderQuestion(question, revealed) {
 
         <!-- Option B -->
         <button
-          class="choice-card choice-card--b${revealed ? ' choice-card--revealed' : ''}${alreadyVoted && sessionVotes[question.id] === 'b' ? ' choice-card--chosen' : ''}"
+          class="choice-card choice-card--b${revealed ? ' choice-card--revealed' : ''}${alreadyVoted && sessionVotes[question.id] === 'b' ? ' choice-card--chosen' + keyPulseClass(fromKey) : ''}"
           data-choice="b"
           ${alreadyVoted ? 'disabled aria-disabled="true"' : ''}
           aria-label="Choose: ${escHtml(question.optionB)}"
@@ -189,7 +194,7 @@ function renderQuestion(question, revealed) {
 
   // Attach listeners
   container.querySelectorAll('.choice-card:not([disabled])').forEach(card => {
-    card.addEventListener('click', () => handleChoice(question, card.dataset.choice));
+    card.addEventListener('click', () => handleChoice(question, card.dataset.choice, false));
   });
 
   const nextBtn = container.querySelector('#btn-next');
@@ -198,8 +203,8 @@ function renderQuestion(question, revealed) {
   }
 }
 
-// ── Handle a choice click ────────────────────────────────────────────────
-function handleChoice(question, choice) {
+// ── Handle a choice click or keypress ────────────────────────────────────
+function handleChoice(question, choice, fromKey) {
   // Guard: block double-voting this session
   const sv = getSessionVotes();
   if (sv[question.id]) return;
@@ -209,7 +214,7 @@ function handleChoice(question, choice) {
   recordSessionVote(question.id, choice);
 
   // Re-render with reveal
-  renderQuestion(question, true);
+  renderQuestion(question, true, fromKey);
 }
 
 // ── Handle Next button ───────────────────────────────────────────────────
