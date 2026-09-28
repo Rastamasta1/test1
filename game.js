@@ -31,11 +31,46 @@ function shuffle(arr) {
 let deck = [];          // shuffled question list for this session
 let currentIndex = 0;  // pointer into deck
 let container = null;  // mounted DOM element
+let currentQuestion = null;  // question object shown by the last renderQuestion call
+let currentRevealed = false; // whether the currently shown card has been answered
+let keydownInstalled = false; // guard so the document listener is only added once
+
+// ── Public: decide what a keypress does (pure) ────────────────────────────
+export function keyAction(key, revealed) {
+  if (!revealed) {
+    if (key === 'a' || key === 'A') return 'A';
+    if (key === 'b' || key === 'B') return 'B';
+    return null;
+  }
+  if (key === 'Enter' || key === 'n' || key === 'N') return 'next';
+  return null;
+}
 
 // ── Public: mount game view ───────────────────────────────────────────────
 export function initGame(containerEl) {
   container = containerEl;
   startSession();
+  if (!keydownInstalled) {
+    document.addEventListener('keydown', handleKeydown);
+    keydownInstalled = true;
+  }
+}
+
+// ── Handle a document-level keydown ──────────────────────────────────────
+function handleKeydown(event) {
+  const tag = event.target && event.target.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+  const action = keyAction(event.key, currentRevealed);
+  if (!action || !currentQuestion) return;
+
+  if (action === 'A') {
+    handleChoice(currentQuestion, 'a');
+  } else if (action === 'B') {
+    handleChoice(currentQuestion, 'b');
+  } else if (action === 'next') {
+    handleNext();
+  }
 }
 
 // ── Public: restart (e.g. after stats reset) ─────────────────────────────
@@ -78,6 +113,9 @@ function renderCurrent() {
 
 // ── Render a single question with choice cards ───────────────────────────
 function renderQuestion(question, revealed) {
+  currentQuestion = question;
+  currentRevealed = revealed;
+
   const votes = getVotes(question.id);   // { a: number, b: number }
   const sessionVotes = getSessionVotes();
   const alreadyVoted = !!sessionVotes[question.id];  // double-vote guard
@@ -137,6 +175,8 @@ function renderQuestion(question, revealed) {
           ` : ''}
         </button>
       </div>
+
+      <p class="keys-hint">Keys: A · B · Enter</p>
 
       ${revealed || alreadyVoted ? `
         <div class="reveal-footer">
