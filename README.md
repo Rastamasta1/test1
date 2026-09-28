@@ -1,4 +1,5 @@
 # Would You Rather?
+![Would You Rather? — two doors, A and B](images/hero.jpg)
 
 This repository is the Conductor factory's drill ground — a small, self-contained browser app used to exercise the factory's build, test, and governance loop end to end.
 

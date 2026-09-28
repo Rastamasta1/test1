@@ -189,6 +189,12 @@ a { color: var(--accent); }
 
 .view[hidden] { display: none !important; }
 
+/* ── Hero image ───────────────────────────────────────────────────────── */
+.hero {
+  max-width: 100%;
+  height: auto;
+}
+
 /* ── Game wrap ────────────────────────────────────────────────────────── */
 .game-wrap {
   display: flex;
