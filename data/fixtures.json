@@ -1,0 +1,62 @@
+[
+  {
+    "id": "rec-001",
+    "name": "Kind of Blue",
+    "description": "Miles Davis's landmark 1959 modal jazz album, featuring John Coltrane and Bill Evans. One of the best-selling jazz records of all time."
+  },
+  {
+    "id": "rec-002",
+    "name": "Rumours",
+    "description": "Fleetwood Mac's 1977 soft rock masterpiece recorded amid the band's personal turmoil. Contains classics like 'Go Your Own Way' and 'Dreams'."
+  },
+  {
+    "id": "rec-003",
+    "name": "Purple Rain",
+    "description": "Prince and The Revolution's 1984 soundtrack album blending funk, rock and pop. The title track remains one of the greatest guitar ballads ever recorded."
+  },
+  {
+    "id": "rec-004",
+    "name": "Nevermind",
+    "description": "Nirvana's 1991 breakthrough record that propelled grunge into the mainstream. 'Smells Like Teen Spirit' became the anthem of a generation."
+  },
+  {
+    "id": "rec-005",
+    "name": "Blue",
+    "description": "Joni Mitchell's deeply personal 1971 singer-songwriter album. Widely regarded as one of the greatest albums ever made for its raw emotional honesty."
+  },
+  {
+    "id": "rec-006",
+    "name": "Innervisions",
+    "description": "Stevie Wonder's 1973 soul and funk odyssey exploring social and political themes. Features the hit 'Higher Ground' and 'Living for the City'."
+  },
+  {
+    "id": "rec-007",
+    "name": "The Dark Side of the Moon",
+    "description": "Pink Floyd's 1973 progressive rock concept album examining the human condition. Spent a record-breaking 937 weeks on the Billboard 200."
+  },
+  {
+    "id": "rec-008",
+    "name": "What's Going On",
+    "description": "Marvin Gaye's 1971 concept album addressing war, poverty and environmental destruction. A cornerstone of soul music and social commentary."
+  },
+  {
+    "id": "rec-009",
+    "name": "Tapestry",
+    "description": "Carole King's 1971 singer-songwriter classic featuring 'I Feel the Earth Move' and 'You've Got a Friend'. Won four Grammy Awards including Album of the Year."
+  },
+  {
+    "id": "rec-010",
+    "name": "Ready to Die",
+    "description": "The Notorious B.I.G.'s 1994 debut that defined East Coast hip-hop. A cinematic portrait of street life in Brooklyn with unforgettable lyricism."
+  },
+  {
+    "id": "rec-011",
+    "name": "Horses",
+    "description": "Patti Smith's 1975 debut album blending punk rock with beat poetry. Produced by John Cale, it opened with a reimagining of Van Morrison's 'Gloria'."
+  },
+  {
+    "id": "rec-012",
+    "name": "Graceland",
+    "description": "Paul Simon's 1986 world music fusion album recorded in South Africa with local musicians. Won the Grammy for Album of the Year and introduced mbaqanga to global audiences."
+  }
+]
