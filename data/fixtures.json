@@ -1,0 +1,146 @@
+[
+  {
+    "id": "rec-001",
+    "name": "Kind of Blue",
+    "description": "Miles Davis's landmark 1959 modal jazz album, featuring John Coltrane and Bill Evans on some of the most iconic jazz recordings ever made.",
+    "category": "Jazz"
+  },
+  {
+    "id": "rec-002",
+    "name": "Dark Side of the Moon",
+    "description": "Pink Floyd's 1973 progressive rock masterpiece exploring themes of conflict, greed, time and mental illness through seamless sonic experimentation.",
+    "category": "Rock"
+  },
+  {
+    "id": "rec-003",
+    "name": "Thriller",
+    "description": "Michael Jackson's 1982 pop phenomenon featuring hit singles Billie Jean, Beat It and the title track, the best-selling album of all time.",
+    "category": "Pop"
+  },
+  {
+    "id": "rec-004",
+    "name": "What's Going On",
+    "description": "Marvin Gaye's 1971 concept album addressing social injustice, ecology and spirituality, redefining what soul music could say and do.",
+    "category": "Soul"
+  },
+  {
+    "id": "rec-005",
+    "name": "Nevermind",
+    "description": "Nirvana's 1991 grunge breakthrough featuring Smells Like Teen Spirit, bringing alternative rock into the mainstream with raw, distorted energy.",
+    "category": "Rock"
+  },
+  {
+    "id": "rec-006",
+    "name": "Blue",
+    "description": "Joni Mitchell's deeply personal 1971 folk album, widely regarded as one of the greatest singer-songwriter records ever committed to vinyl.",
+    "category": "Folk"
+  },
+  {
+    "id": "rec-007",
+    "name": "Ready to Die",
+    "description": "The Notorious B.I.G.'s 1994 debut, a vivid narrative of street life and ambition that cemented East Coast hip-hop's golden era.",
+    "category": "Hip-Hop"
+  },
+  {
+    "id": "rec-008",
+    "name": "Abbey Road",
+    "description": "The Beatles' 1969 swan song featuring the legendary medley on Side B, showcasing the band's songwriting genius at its creative peak.",
+    "category": "Rock"
+  },
+  {
+    "id": "rec-009",
+    "name": "Songs in the Key of Life",
+    "description": "Stevie Wonder's ambitious 1976 double album celebrating life, love and humanity across funk, soul, jazz and classical influences.",
+    "category": "Soul"
+  },
+  {
+    "id": "rec-010",
+    "name": "Rumours",
+    "description": "Fleetwood Mac's 1977 classic recorded amid band relationship turmoil, producing timeless soft-rock anthems that still resonate today.",
+    "category": "Rock"
+  },
+  {
+    "id": "rec-011",
+    "name": "Purple Rain",
+    "description": "Prince's 1984 soundtrack album blending rock, funk and R&B into an electrifying statement that made him a global superstar.",
+    "category": "Funk"
+  },
+  {
+    "id": "rec-012",
+    "name": "Led Zeppelin IV",
+    "description": "Led Zeppelin's untitled 1971 fourth album home to Stairway to Heaven, Black Dog and Rock and Roll — essential hard rock listening.",
+    "category": "Rock"
+  },
+  {
+    "id": "rec-013",
+    "name": "Illmatic",
+    "description": "Nas's flawless 1994 debut distilling Queensbridge street poetry over jazz-infused beats, considered the gold standard of hip-hop lyricism.",
+    "category": "Hip-Hop"
+  },
+  {
+    "id": "rec-014",
+    "name": "A Love Supreme",
+    "description": "John Coltrane's 1965 spiritual jazz suite in four movements, a transcendent offering of devotion and musical mastery.",
+    "category": "Jazz"
+  },
+  {
+    "id": "rec-015",
+    "name": "Blonde on Blonde",
+    "description": "Bob Dylan's 1966 double album capturing a poetic and surreal lyrical peak, blending folk, rock and blues in a groundbreaking format.",
+    "category": "Folk"
+  },
+  {
+    "id": "rec-016",
+    "name": "Sign 'O' the Times",
+    "description": "Prince's expansive 1987 double album surveying love, religion, gang violence and AIDS with breathtaking musical range and intimacy.",
+    "category": "Funk"
+  },
+  {
+    "id": "rec-017",
+    "name": "Exile on Main St.",
+    "description": "The Rolling Stones' sprawling 1972 double album recorded in a French villa, raw and loose, blending rock, blues, country and gospel.",
+    "category": "Rock"
+  },
+  {
+    "id": "rec-018",
+    "name": "The Miseducation of Lauryn Hill",
+    "description": "Lauryn Hill's 1998 debut solo album weaving neo-soul, R&B and hip-hop into a deeply personal reflection on love and self-discovery.",
+    "category": "R&B"
+  },
+  {
+    "id": "rec-019",
+    "name": "Innervisions",
+    "description": "Stevie Wonder's 1973 socially conscious masterwork blending funk, soul and jazz with lyrical commentary on drugs, racism and spirituality.",
+    "category": "Soul"
+  },
+  {
+    "id": "rec-020",
+    "name": "Remain in Light",
+    "description": "Talking Heads' 1980 avant-funk landmark produced with Brian Eno, layering African polyrhythms and post-punk energy into something wholly new.",
+    "category": "New Wave"
+  },
+  {
+    "id": "rec-021",
+    "name": "Harvest",
+    "description": "Neil Young's best-selling 1972 album featuring Heart of Gold, blending country, folk and rock in an intimate and deeply affecting way.",
+    "category": "Folk"
+  },
+  {
+    "id": "rec-022",
+    "name": "Let's Get It On",
+    "description": "Marvin Gaye's sensual and smooth 1973 R&B album, a celebration of physical love wrapped in lush orchestration and irresistible grooves.",
+    "category": "R&B"
+  },
+  {
+    "id": "rec-023",
+    "name": "The Blueprint",
+    "description": "Jay-Z's 2001 comeback album produced largely by Kanye West and Just Blaze, reestablishing soulful sample-based production in hip-hop.",
+    "category": "Hip-Hop"
+  },
+  {
+    "id": "rec-024",
+    "name": "Electric Ladyland",
+    "description": "Jimi Hendrix's 1968 psychedelic double album showcasing his guitar virtuosity and studio experimentation at their most dazzling and adventurous.",
+    "category": "Rock"
+  }
+]
