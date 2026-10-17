@@ -4,7 +4,7 @@
  * Exports:
  *   getQuestions()                    → Question[]
  *   addQuestion(optionA, optionB)     → Question
- *   updateQuestion(id, optionA, optionB) → void
+ *   reviseQuestion(id, optionA, optionB) → void
  *   deleteQuestion(id)                → void
  *   getVotes(questionId)              → { a: number, b: number }
  *   recordVote(questionId, choice)    → void
@@ -91,8 +91,9 @@ export function addQuestion(optionA, optionB) {
 
 /**
  * Update an existing custom question by id.
+ * (Exported as reviseQuestion — rename only, behaviour unchanged.)
  */
-export function updateQuestion(id, optionA, optionB) {
+export function reviseQuestion(id, optionA, optionB) {
   const custom = loadJSON(KEY_CUSTOM_QUESTIONS, []);
   const idx = custom.findIndex(q => q.id === id);
   if (idx === -1) return;
