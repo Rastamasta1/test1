@@ -58,3 +58,4 @@ test('package-lock.json root dependency pin for lodash is at least 4.18 and not 
   assert.ok(version, "packages[''].dependencies.lodash must exist in package-lock.json");
   assertAtLeastMinVersion(version, "packages[''].dependencies.lodash");
 });
+// SR-2p probe: a later change to this file (restored right after)
